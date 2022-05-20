@@ -1,8 +1,8 @@
 **Plan / Road Map**
 
-- [ ] `Phase 1`
-  - [ ] Make directory structure and add/arrange necessary files.
-  - [ ] check `mocha`, `eslint` present in the working directory
+- [x] `Phase 1`
+  - [x] Make directory structure and add/arrange necessary files.
+  - [x] check `mocha`, `eslint` present in the working directory
 
 - [ ] `Phase 2`
   - [ ] Implement `head` for hard coded content

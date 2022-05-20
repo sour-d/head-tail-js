@@ -9,6 +9,9 @@
 
 **IDEAS**
 
+- [ ] default line count will be assiged in parser
+- [ ] in `head` function, `content` will be changed to file paths
+- [ ] extract logic of choosing option from head
 - [ ] Move string ultil functions into another files
 - [ ] what if -n or -c is zero?
 

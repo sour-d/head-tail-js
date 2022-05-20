@@ -1,10 +1,11 @@
-const { head, firstNLines, firstNCharecters } = require('../src/headLib.js');
+const { head, firstNElement } = require('../src/headLib.js');
 const assert = require('assert');
 
 describe('head', () => {
   it('should return the single line', () => {
-    assert.strictEqual(head('hello', 1), 'hello');
-    assert.strictEqual(head('bye', 1), 'bye');
+    const numOfLines = 1;
+    assert.strictEqual(head('hello', { numOfLines }), 'hello');
+    assert.strictEqual(head('bye', { numOfLines }), 'bye');
   });
 
   it('should return first 2 lines', () => {
@@ -42,31 +43,15 @@ describe('head', () => {
 
 describe('firstNLines', () => {
   it('Should filter single line', () => {
-    assert.deepStrictEqual(firstNLines(['hello'], 1), ['hello']);
+    assert.deepStrictEqual(firstNElement('hello', '\n', 1), 'hello');
   });
 
   it('Should filter first 2 lines', () => {
-    const lines = ['1', '2', '3'];
-    assert.deepStrictEqual(firstNLines(lines, 2), ['1', '2']);
+    const lines = '1\n2\n3';
+    assert.deepStrictEqual(firstNElement(lines, '\n', 2), '1\n2');
   });
   it('Should filter first 3 lines', () => {
-    const lines = ['1', '2', '3'];
-    assert.deepStrictEqual(firstNLines(lines, 3), ['1', '2', '3']);
-  });
-});
-
-describe.skip('firstNCharecters', () => {
-  it('Should filter single charecter', () => {
-    assert.deepStrictEqual(firstNCharecters('hello', 1), 'h');
-  });
-
-  it('Should filter multi charecter', () => {
-    assert.deepStrictEqual(firstNCharecters('hello', 2), 'he');
-    assert.deepStrictEqual(firstNCharecters('hello', 3), 'hel');
-    assert.deepStrictEqual(firstNCharecters('hello', 10), 'hello');
-  });
-
-  it('Should return all if char count is large than content', () => {
-    assert.deepStrictEqual(firstNCharecters('hello', 10), 'hello');
+    const lines = '1\n2\n3';
+    assert.deepStrictEqual(firstNElement(lines, '\n', 3), '1\n2\n3');
   });
 });

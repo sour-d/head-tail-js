@@ -1,4 +1,4 @@
-const { head, firstNElement } = require('../src/headLib.js');
+const { head, firstNLines, firstNChars } = require('../src/headLib.js');
 const assert = require('assert');
 
 describe('head', () => {
@@ -43,15 +43,30 @@ describe('head', () => {
 
 describe('firstNLines', () => {
   it('Should filter single line', () => {
-    assert.deepStrictEqual(firstNElement('hello', '\n', 1), 'hello');
+    assert.deepStrictEqual(firstNLines('hello', 1), 'hello');
   });
 
   it('Should filter first 2 lines', () => {
-    const lines = '1\n2\n3';
-    assert.deepStrictEqual(firstNElement(lines, '\n', 2), '1\n2');
+    assert.deepStrictEqual(firstNLines('1\n2\n3', 2), '1\n2');
   });
   it('Should filter first 3 lines', () => {
-    const lines = '1\n2\n3';
-    assert.deepStrictEqual(firstNElement(lines, '\n', 3), '1\n2\n3');
+    assert.deepStrictEqual(firstNLines('1\n2\n3', 3), '1\n2\n3');
+  });
+});
+
+describe('firstNChars', () => {
+  it('Should return single char', () => {
+    assert.deepStrictEqual(firstNChars('h', 1), 'h');
+  });
+
+  it('Should return first 2 chars', () => {
+    assert.deepStrictEqual(firstNChars('he', 2), 'he');
+    assert.deepStrictEqual(firstNChars('hello', 2), 'he');
+  });
+  it('Should return first 3 chars', () => {
+    assert.deepStrictEqual(firstNChars('hello', 3), 'hel');
+  });
+  it('Should return all char if length is greater than content length', () => {
+    assert.deepStrictEqual(firstNChars('hello', 3), 'hel');
   });
 });

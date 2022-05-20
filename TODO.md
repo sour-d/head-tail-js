@@ -17,6 +17,7 @@
 
 **DONE**
 
+- [x] separate -n and -c logic
 - [x] `head` can take `charCount` in argument
 - [x] modified string functions to get lines or charecters
 - [x] ~~function to get first N charecters~~

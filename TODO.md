@@ -1,0 +1,30 @@
+**Plan / Road Map**
+
+- [ ] `Phase 1`
+  - [ ] Make directory structure and add/arrange necessary files.
+  - [ ] check `mocha`, `eslint` present in the working directory
+
+- [ ] `Phase 2`
+  - [ ] Implement `head` for hard coded content
+  - [ ] `head` only works on one line content
+  - [ ] `head` works on multi line content
+
+
+- [ ] `Phase 3`
+  - [ ] hard code 3 as `numOfLines`
+  - [ ] `head` can take `numOfLines` in argument
+  - [ ] `head` can take `charCount` in argument
+
+
+- [ ] `Phase 4`
+  - [ ] `head` can take one file in argument
+  - [ ] `head` can take multiple file in argument
+
+
+- [ ] `Phase 5`
+  - [ ] Write `main` connect with lib
+  - [ ] Make `head` work values given by user from cmd-line
+
+**Ideas**
+
+<!-- ideas not write here -->

@@ -11,4 +11,9 @@ describe('head', () => {
     assert.strictEqual(head('hello\nbye'), 'hello\nbye');
     assert.strictEqual(head('hello\nbye\nhi'), 'hello\nbye\nhi');
   });
+
+  it('should display only 3 line', () => {
+    assert.strictEqual(head('hello\nbye\nbye\nhi'), 'hello\nbye\nbye');
+    assert.strictEqual(head('1\n2\n3\n4'), '1\n2\n3');
+  });
 });

@@ -12,10 +12,11 @@
 
 **IDEAS**
 
--[ ] Extract the logic to cut the content
+- [ ] Move string ultil functions into another files
 
 **DONE**
 
+- [x] Extract the logic to cut the content
 - [x] hard code 3 as deafult `numOfLines`
 - [x] `head` works on multi line content
 - [x] `head` only works on one line content

@@ -1,4 +1,4 @@
-const { head } = require('../src/headLib.js');
+const { head, firstNLines } = require('../src/headLib.js');
 const assert = require('assert');
 
 describe('head', () => {
@@ -15,5 +15,17 @@ describe('head', () => {
   it('should display only 3 line', () => {
     assert.strictEqual(head('hello\nbye\nbye\nhi'), 'hello\nbye\nbye');
     assert.strictEqual(head('1\n2\n3\n4'), '1\n2\n3');
+  });
+});
+
+describe('firstNLines', () => {
+  it('Should filter single line', () => {
+    assert.deepStrictEqual(firstNLines(['hello'], 1), ['hello']);
+  });
+
+  it('Should filter multiple lines', () => {
+    const lines = ['1', '2', '3'];
+    assert.deepStrictEqual(firstNLines(lines, 2), ['1', '2']);
+    assert.deepStrictEqual(firstNLines(lines, 3), ['1', '2', '3']);
   });
 });

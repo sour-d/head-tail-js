@@ -1,6 +1,5 @@
 **TODO**
 
-- [ ] `head` can take `charCount` in argument
 - [ ] `head` can take one file in argument
 - [ ] `head` can take multiple file in argument
 - [ ] Write `main` connect with lib
@@ -11,9 +10,13 @@
 **IDEAS**
 
 - [ ] Move string ultil functions into another files
+- [ ] what if -n or -c is zero?
 
 **DONE**
 
+- [x] `head` can take `charCount` in argument
+- [x] modified string functions to get lines or charecters
+- [x] ~~function to get first N charecters~~
 - [x] `head` can take `numOfLines` in argument
 - [x] Implement `head` for hard coded content
 - [x] Extract the logic to cut the content

@@ -1,15 +1,20 @@
-const splitLines = (content) => content.split('\n');
-const joinLines = (content) => content.join('\n');
+const splitLines = (content, delimeter) => content.split(delimeter);
 
-const firstNLines = (lines, numOfLines) => {
-  return lines.slice(0, numOfLines);
-};
+const joinLines = (content, delimeter) => content.join(delimeter);
 
-const head = (content, numOfLines = 3) => {
-  const lines = splitLines(content);
-  const filteredContent = firstNLines(lines, numOfLines);
-  return joinLines(filteredContent);
+const filterFirstNElement = (lines, filterUpto) => lines.slice(0, filterUpto);
+
+const head = (content, { numOfLines = 3, numOfChar }) => {
+  let delimeter = '\n';
+  let filterUpto = numOfLines;
+  if (numOfChar) {
+    delimeter = '';
+    filterUpto = numOfChar;
+  }
+  const lines = splitLines(content, delimeter);
+  const filteredContent = filterFirstNElement(lines, filterUpto);
+  return joinLines(filteredContent, delimeter);
 };
 
 exports.head = head;
-exports.firstNLines = firstNLines;
+exports.firstNLines = filterFirstNElement;

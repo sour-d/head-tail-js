@@ -1,7 +1,6 @@
 **TODO**
 
 - [ ] Implement `head` for hard coded content
-- [ ] `head` works on multi line content
 - [ ] hard code 3 as deafult `numOfLines`
 - [ ] `head` can take `numOfLines` in argument
 - [ ] `head` can take `charCount` in argument
@@ -18,6 +17,7 @@
 
 **DONE**
 
+- [x] `head` works on multi line content
 - [x] `head` only works on one line content
 - [x] Make directory structure and add/arrange necessary files.
 - [x] check `mocha`, `eslint` present in the working directory

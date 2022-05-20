@@ -1,5 +1,4 @@
 const head = (content) => {
-  // const content = 'hello';
   return content;
 };
 

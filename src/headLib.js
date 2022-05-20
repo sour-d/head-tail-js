@@ -5,8 +5,7 @@ const firstNLines = (lines, numOfLines) => {
   return lines.slice(0, numOfLines);
 };
 
-const head = (content) => {
-  const numOfLines = 3;
+const head = (content, numOfLines = 3) => {
   const lines = splitLines(content);
   const filteredContent = firstNLines(lines, numOfLines);
   return joinLines(filteredContent);

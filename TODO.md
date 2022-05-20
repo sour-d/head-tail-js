@@ -1,7 +1,5 @@
 **TODO**
 
-- [ ] Implement `head` for hard coded content
-- [ ] `head` can take `numOfLines` in argument
 - [ ] `head` can take `charCount` in argument
 - [ ] `head` can take one file in argument
 - [ ] `head` can take multiple file in argument
@@ -16,6 +14,8 @@
 
 **DONE**
 
+- [x] `head` can take `numOfLines` in argument
+- [x] Implement `head` for hard coded content
 - [x] Extract the logic to cut the content
 - [x] hard code 3 as deafult `numOfLines`
 - [x] `head` works on multi line content

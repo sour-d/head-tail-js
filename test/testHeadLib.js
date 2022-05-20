@@ -3,18 +3,28 @@ const assert = require('assert');
 
 describe('head', () => {
   it('should display the single line of content', () => {
-    assert.strictEqual(head('hello'), 'hello');
-    assert.strictEqual(head('bye'), 'bye');
+    assert.strictEqual(head('hello', 1), 'hello');
+    assert.strictEqual(head('bye', 1), 'bye');
   });
 
-  it('should display the multi line content', () => {
-    assert.strictEqual(head('hello\nbye'), 'hello\nbye');
-    assert.strictEqual(head('hello\nbye\nhi'), 'hello\nbye\nhi');
+  it('should display first 2 lines', () => {
+    assert.strictEqual(head('Hello\nBye', 2), 'Hello\nBye');
+    assert.strictEqual(head('Hello\nBye\nHi', 2), 'Hello\nBye');
   });
 
-  it('should display only 3 line', () => {
-    assert.strictEqual(head('hello\nbye\nbye\nhi'), 'hello\nbye\nbye');
-    assert.strictEqual(head('1\n2\n3\n4'), '1\n2\n3');
+  it('should display first 3 lines', () => {
+    const content = 'One\nTwo\nThree\nFour';
+    assert.strictEqual(head(content, 3), 'One\nTwo\nThree');
+  });
+
+  it('should display first 4 lines', () => {
+    const content = 'One\nTwo\nThree\nFour';
+    assert.strictEqual(head(content, 4), content);
+  });
+
+  it('should display 3 lines if line count not passed', () => {
+    const content = 'One\nTwo\nThree\nFour';
+    assert.strictEqual(head(content), 'One\nTwo\nThree');
   });
 });
 

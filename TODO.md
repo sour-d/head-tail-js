@@ -11,7 +11,7 @@
 
 
 - [ ] `Phase 3`
-  - [ ] hard code 3 as `numOfLines`
+  - [ ] hard code 3 as deafult `numOfLines`
   - [ ] `head` can take `numOfLines` in argument
   - [ ] `head` can take `charCount` in argument
 
@@ -24,6 +24,8 @@
 - [ ] `Phase 5`
   - [ ] Write `main` connect with lib
   - [ ] Make `head` work values given by user from cmd-line
+  - [ ] Changed default `numOfLines` from 3 to 10
+  - [ ] Provide a `help` message
 
 **Ideas**
 

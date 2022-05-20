@@ -13,6 +13,10 @@ If more than a single file is specified, each file is preceded by a header consi
 ## **Usage**
 
 ``` bash
+
+head | head --help
+  -> display `usage: head [-n lines | -c bytes] [file ...]`
+
 head [file ...]
   -> display the first 10 lines from the mentioned files
 

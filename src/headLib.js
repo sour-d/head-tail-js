@@ -23,13 +23,22 @@ const head = (content, { numOfLines, numOfChars }) => {
   return firstNLines(content, sliceUpto);
 };
 
+const formatOutput = function (contents, files) {
+  if (contents.length === 1) {
+    return contents[0];
+  }
+  return contents.reduce((formattedOutput, content, index) => {
+    return `${formattedOutput}==> ${files[index]} <==\n${content}\n`;
+  }, '');
+};
+
 const headMain = (readFile, args) => {
   const { files, numOfChars, numOfLines } = parseArgs(args);
   const contents = files.map(file => {
     const content = readFile(file, 'utf8');
     return head(content, { numOfChars, numOfLines });
   });
-  return contents;
+  return formatOutput(contents, files);
 };
 
 exports.headMain = headMain;

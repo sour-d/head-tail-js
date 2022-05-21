@@ -2,7 +2,6 @@
 
 - [ ] Changed default `numOfLines` from 3 to 10
 - [ ] Provide a `help` message
-- [ ] write a formatter to format the output for multiple files
 
 **IDEAS**
 
@@ -12,6 +11,7 @@
 
 **DONE**
 
+- [x] write a formatter to format the output for multiple files
 - [x] Make `head` work values given by user from cmd-line
 - [x] Write `main` connect with lib
 - [x] added parser in headMain

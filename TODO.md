@@ -1,7 +1,6 @@
 **TODO**
 
 - [ ] Write `main` connect with lib
-- [ ] write `parser`
 - [ ] Make `head` work values given by user from cmd-line
 - [ ] Changed default `numOfLines` from 3 to 10
 - [ ] Provide a `help` message
@@ -15,6 +14,7 @@
 
 **DONE**
 
+- [x] write `parser`
 - [x] `headMain` can take multiple file in argument
 - [x] `head` can take one file in argument
 - [x] in `head` function, `content` will be changed to file paths

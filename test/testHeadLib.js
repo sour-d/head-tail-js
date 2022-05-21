@@ -7,12 +7,12 @@ const {
 const assert = require('assert');
 
 const mockReadFile = (fileName, content) => {
-  let index = 0;
+  let count = 0;
   return (fileToRead, encoding) => {
-    index++;
-    assert.strictEqual(fileName[index - 1], fileToRead);
+    count++;
+    assert.strictEqual(fileName[count - 1], fileToRead);
     assert.strictEqual(encoding, 'utf8');
-    return content[index - 1];
+    return content[count - 1];
   };
 };
 

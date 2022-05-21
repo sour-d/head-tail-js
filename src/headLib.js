@@ -27,9 +27,10 @@ const formatOutput = function (contents, files) {
   if (contents.length === 1) {
     return contents[0];
   }
-  return contents.reduce((formattedOutput, content, index) => {
-    return `${formattedOutput}==> ${files[index]} <==\n${content}\n\n`;
-  }, '');
+  const formattedOutput = contents.map((content, index) => {
+    return `==> ${files[index]} <==\n${content}`;
+  });
+  return formattedOutput.join('\n\n');
 };
 
 const headMain = (readFile, args) => {

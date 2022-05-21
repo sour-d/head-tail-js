@@ -103,7 +103,7 @@ describe('headMain', () => {
     ]);
     assert.deepStrictEqual(
       actual,
-      '==> ./hello.txt <==\nhello\n\n==> ./bye.txt <==\nbye\n\n');
+      '==> ./hello.txt <==\nhello\n\n==> ./bye.txt <==\nbye');
   });
 
   it('Should return array of single charecter of each file', () => {
@@ -113,7 +113,7 @@ describe('headMain', () => {
     const actual = headMain(mockedReadFile, [
       '-c', '1', './hello.txt', './bye.txt', './a.txt'
     ]);
-    assert.deepStrictEqual(actual, '==> ./hello.txt <==\nh\n\n==> ./bye.txt <==\nb\n\n==> ./a.txt <==\na\n\n');
+    assert.deepStrictEqual(actual, '==> ./hello.txt <==\nh\n\n==> ./bye.txt <==\nb\n\n==> ./a.txt <==\na');
   });
 
   it('Should return array of 3 lines of each file', () => {
@@ -125,7 +125,7 @@ describe('headMain', () => {
     ]);
     assert.deepStrictEqual(
       actual,
-      '==> ./hello.txt <==\n1\n2\n3\n\n==> ./bye.txt <==\n1\n2\n3\n\n==> ./a.txt <==\n1\n2\n\n'
+      '==> ./hello.txt <==\n1\n2\n3\n\n==> ./bye.txt <==\n1\n2\n3\n\n==> ./a.txt <==\n1\n2'
     );
   });
 
@@ -136,7 +136,7 @@ describe('headMain', () => {
     const actual = headMain(mockedReadFile, [
       '-c', '2', './hello.txt', './bye.txt', './a.txt'
     ]);
-    assert.deepStrictEqual(actual, '==> ./hello.txt <==\nhe\n\n==> ./bye.txt <==\nby\n\n==> ./a.txt <==\na\n\n');
+    assert.deepStrictEqual(actual, '==> ./hello.txt <==\nhe\n\n==> ./bye.txt <==\nby\n\n==> ./a.txt <==\na');
   });
 
   it('Should return error if invalid switches', () => {
@@ -180,6 +180,6 @@ describe('formatOutput', () => {
   });
 
   it('should return all formatted content', () => {
-    assert.deepStrictEqual(formatOutput(['1', '2'], ['1.txt', '2.txt']), '==> 1.txt <==\n1\n\n==> 2.txt <==\n2\n\n');
+    assert.deepStrictEqual(formatOutput(['1', '2'], ['1.txt', '2.txt']), '==> 1.txt <==\n1\n\n==> 2.txt <==\n2');
   });
 });

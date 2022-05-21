@@ -6,7 +6,7 @@ describe('parseArgs', () => {
     assert.deepStrictEqual(
       parseArgs(['./1.txt', './2.txt', '3.txt']),
       {
-        numOfLines: null,
+        numOfLines: 10,
         numOfChars: null,
         files: ['./1.txt', './2.txt', '3.txt']
       }
@@ -28,7 +28,7 @@ describe('parseArgs', () => {
     assert.deepStrictEqual(
       parseArgs(['-c', '1', './1.txt', './2.txt', '3.txt']),
       {
-        numOfLines: null,
+        numOfLines: 10,
         numOfChars: 1,
         files: ['./1.txt', './2.txt', '3.txt']
       }
@@ -51,7 +51,7 @@ describe('parseArgs', () => {
     assert.deepStrictEqual(
       parseArgs(['-c', '1', '-c', '2', './1.txt', './2.txt', '3.txt']),
       {
-        numOfLines: null,
+        numOfLines: 10,
         numOfChars: 2,
         files: ['./1.txt', './2.txt', '3.txt']
       }
@@ -62,7 +62,7 @@ describe('parseArgs', () => {
     assert.deepStrictEqual(
       parseArgs(['-c1', './1.txt']),
       {
-        numOfLines: null,
+        numOfLines: 10,
         numOfChars: 1,
         files: ['./1.txt']
       }

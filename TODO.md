@@ -5,6 +5,7 @@
 **IDEAS**
 
 - [ ] -1
+- [ ] read file error
 - [ ] large file
 - [ ] default line count will be assiged in parser
 - [ ] Move string ultil functions into another files

@@ -45,8 +45,11 @@ const headMain = (readFile, args) => {
     return 'usage: head [-n lines | -c bytes] [file ...]';
   }
   const contents = files.map(file => {
-    const content = readFile(file, 'utf8');
-    return head(content, { numOfChars, numOfLines });
+    try {
+      return head(readFile(file, 'utf8'), { numOfChars, numOfLines });
+    } catch (error) {
+      return `head: ${file}: No such file or directory`;
+    }
   });
   return formatOutput(contents, files);
 };

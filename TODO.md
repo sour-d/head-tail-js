@@ -5,12 +5,17 @@
 
 **IDEAS**
 
+- [ ] validation
+- [ ] -1
+- [ ] deafult
+- [ ] large file
 - [ ] default line count will be assiged in parser
 - [ ] Move string ultil functions into another files
 - [ ] what if -n or -c is zero?
 
 **DONE**
 
+- [x] help
 - [x] write a formatter to format the output for multiple files
 - [x] Make `head` work values given by user from cmd-line
 - [x] Write `main` connect with lib

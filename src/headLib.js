@@ -28,12 +28,15 @@ const formatOutput = function (contents, files) {
     return contents[0];
   }
   return contents.reduce((formattedOutput, content, index) => {
-    return `${formattedOutput}==> ${files[index]} <==\n${content}\n`;
+    return `${formattedOutput}==> ${files[index]} <==\n${content}\n\n`;
   }, '');
 };
 
 const headMain = (readFile, args) => {
   const { files, numOfChars, numOfLines } = parseArgs(args);
+  if (!files.length) {
+    return 'usage: head [-n lines | -c bytes] [file ...]';
+  }
   const contents = files.map(file => {
     const content = readFile(file, 'utf8');
     return head(content, { numOfChars, numOfLines });
@@ -45,3 +48,4 @@ exports.headMain = headMain;
 exports.head = head;
 exports.firstNLines = firstNLines;
 exports.firstNChars = firstNChars;
+exports.formatOutput = formatOutput;

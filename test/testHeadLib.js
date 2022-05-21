@@ -2,7 +2,8 @@ const {
   head,
   firstNLines,
   firstNChars,
-  headMain
+  headMain,
+  formatOutput
 } = require('../src/headLib.js');
 const assert = require('assert');
 
@@ -94,7 +95,7 @@ describe('headMain', () => {
     ]);
     assert.deepStrictEqual(
       actual,
-      '==> ./hello.txt <==\nhello\n==> ./bye.txt <==\nbye\n');
+      '==> ./hello.txt <==\nhello\n\n==> ./bye.txt <==\nbye\n\n');
   });
 
   it('Should return array of 3 lines of each file', () => {
@@ -106,7 +107,7 @@ describe('headMain', () => {
     ]);
     assert.deepStrictEqual(
       actual,
-      '==> ./hello.txt <==\n1\n2\n3\n==> ./bye.txt <==\n1\n2\n3\n==> ./a.txt <==\n1\n2\n'
+      '==> ./hello.txt <==\n1\n2\n3\n\n==> ./bye.txt <==\n1\n2\n3\n\n==> ./a.txt <==\n1\n2\n\n'
     );
   });
 
@@ -125,7 +126,7 @@ describe('headMain', () => {
     const actual = headMain(mockedReadFile, [
       '-c', 1, './hello.txt', './bye.txt', './a.txt'
     ]);
-    assert.deepStrictEqual(actual, '==> ./hello.txt <==\nh\n==> ./bye.txt <==\nb\n==> ./a.txt <==\na\n');
+    assert.deepStrictEqual(actual, '==> ./hello.txt <==\nh\n\n==> ./bye.txt <==\nb\n\n==> ./a.txt <==\na\n\n');
   });
 
   it('Should return array of 2 charecters of each file', () => {
@@ -135,6 +136,16 @@ describe('headMain', () => {
     const actual = headMain(mockedReadFile, [
       '-c', 2, './hello.txt', './bye.txt', './a.txt'
     ]);
-    assert.deepStrictEqual(actual, '==> ./hello.txt <==\nhe\n==> ./bye.txt <==\nby\n==> ./a.txt <==\na\n');
+    assert.deepStrictEqual(actual, '==> ./hello.txt <==\nhe\n\n==> ./bye.txt <==\nby\n\n==> ./a.txt <==\na\n\n');
+  });
+});
+
+describe('formatOutput', () => {
+  it('should return first element', () => {
+    assert.deepStrictEqual(formatOutput(['hello'], ['hello.txt']), 'hello');
+  });
+
+  it('should return all formatted content', () => {
+    assert.deepStrictEqual(formatOutput(['1', '2'], ['1.txt', '2.txt']), '==> 1.txt <==\n1\n\n==> 2.txt <==\n2\n\n');
   });
 });

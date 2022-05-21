@@ -1,3 +1,4 @@
+const { parseArgs } = require('./parse.js');
 const NEWLINE = '\n';
 
 const split = (content, delimeter) => content.split(delimeter);
@@ -14,18 +15,19 @@ const firstNChars = (content, sliceUpto) => {
   return content.slice(0, sliceUpto);
 };
 
-const head = (content, { numOfLines, numOfChar }) => {
-  const sliceUpto = numOfChar ? numOfChar : numOfLines;
-  if (numOfChar) {
+const head = (content, { numOfLines, numOfChars }) => {
+  const sliceUpto = numOfChars ? numOfChars : numOfLines;
+  if (numOfChars) {
     return firstNChars(content, sliceUpto);
   }
   return firstNLines(content, sliceUpto);
 };
 
-const headMain = (files, readFile, options) => {
+const headMain = (readFile, args) => {
+  const { files, numOfChars, numOfLines } = parseArgs(args);
   const contents = files.map(file => {
     const content = readFile(file, 'utf8');
-    return head(content, options);
+    return head(content, { numOfChars, numOfLines });
   });
   return contents;
 };

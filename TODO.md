@@ -14,6 +14,7 @@
 
 **DONE**
 
+- [x] added parser in headMain
 - [x] write `parser`
 - [x] `headMain` can take multiple file in argument
 - [x] `head` can take one file in argument

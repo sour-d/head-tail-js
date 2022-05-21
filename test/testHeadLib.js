@@ -36,13 +36,13 @@ describe('head', () => {
   });
 
   it('should return 1 charecters', () => {
-    const options = { numOfChar: 1 };
+    const options = { numOfChars: 1 };
     const actual = head('One\nTwo\nThree\nFour', options);
     assert.strictEqual(actual, 'O');
   });
 
   it('should return 5 charecters', () => {
-    const options = { numOfChar: 5 };
+    const options = { numOfChars: 5 };
     const actual = head('One\nTwo\nThree\nFour', options);
     assert.strictEqual(actual, 'One\nT');
   });
@@ -81,7 +81,7 @@ describe('firstNChars', () => {
 describe('headMain', () => {
   it('Should return array of one line', () => {
     const mockedReadFile = mockReadFile(['./hello.txt'], ['hello']);
-    const actual = headMain(['./hello.txt'], mockedReadFile, { numOfLines: 1 });
+    const actual = headMain(mockedReadFile, ['-n', 1, './hello.txt']);
     assert.deepStrictEqual(actual, ['hello']);
   });
 
@@ -89,7 +89,9 @@ describe('headMain', () => {
     const files = ['./hello.txt', './bye.txt', './a.txt'];
     const contents = ['hello', 'bye', 'a'];
     const mockedReadFile = mockReadFile(files, contents);
-    const actual = headMain(files, mockedReadFile, { numOfLines: 1 });
+    const actual = headMain(mockedReadFile, [
+      '-n', 1, './hello.txt', './bye.txt', './a.txt'
+    ]);
     assert.deepStrictEqual(actual, contents);
   });
 
@@ -97,7 +99,9 @@ describe('headMain', () => {
     const files = ['./hello.txt', './bye.txt', './a.txt'];
     const contents = ['1\n2\n3\n4', '1\n2\n3', '1\n2'];
     const mockedReadFile = mockReadFile(files, contents);
-    const actual = headMain(files, mockedReadFile, { numOfLines: 3 });
+    const actual = headMain(mockedReadFile, [
+      '-n', 3, './hello.txt', './bye.txt', './a.txt'
+    ]);
     assert.deepStrictEqual(actual, ['1\n2\n3', '1\n2\n3', '1\n2']);
   });
 
@@ -105,7 +109,7 @@ describe('headMain', () => {
     const files = ['./hello.txt'];
     const contents = ['hello'];
     const mockedReadFile = mockReadFile(files, contents);
-    const actual = headMain(files, mockedReadFile, { numOfChar: 1 });
+    const actual = headMain(mockedReadFile, ['-c', 1, './hello.txt']);
     assert.deepStrictEqual(actual, ['h']);
   });
 
@@ -113,7 +117,9 @@ describe('headMain', () => {
     const files = ['./hello.txt', './bye.txt', './a.txt'];
     const contents = ['hello', 'bye', 'a'];
     const mockedReadFile = mockReadFile(files, contents);
-    const actual = headMain(files, mockedReadFile, { numOfChar: 1 });
+    const actual = headMain(mockedReadFile, [
+      '-c', 1, './hello.txt', './bye.txt', './a.txt'
+    ]);
     assert.deepStrictEqual(actual, ['h', 'b', 'a']);
   });
 
@@ -121,7 +127,9 @@ describe('headMain', () => {
     const files = ['./hello.txt', './bye.txt', './a.txt'];
     const contents = ['hello', 'bye', 'a'];
     const mockedReadFile = mockReadFile(files, contents);
-    const actual = headMain(files, mockedReadFile, { numOfChar: 2 });
+    const actual = headMain(mockedReadFile, [
+      '-c', 2, './hello.txt', './bye.txt', './a.txt'
+    ]);
     assert.deepStrictEqual(actual, ['he', 'by', 'a']);
   });
 });

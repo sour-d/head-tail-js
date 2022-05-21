@@ -5,7 +5,6 @@
 **IDEAS**
 
 - [ ] -1
-- [ ] deafult
 - [ ] large file
 - [ ] default line count will be assiged in parser
 - [ ] Move string ultil functions into another files
@@ -13,6 +12,7 @@
 
 **DONE**
 
+- [x] deafult
 - [x] validation
 - [x] Provide a `help` message
 - [x] help

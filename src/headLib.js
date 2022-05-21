@@ -39,7 +39,7 @@ const headMain = (readFile, args) => {
   } catch (error) {
     return error.name + ': ' + error.message;
   }
-  const { files, numOfChars, numOfLines = 10 } = parsedData;
+  const { files, numOfChars, numOfLines } = parsedData;
   if (!files.length) {
     return 'usage: head [-n lines | -c bytes] [file ...]';
   }

@@ -63,7 +63,7 @@ const parseArgs = (args) => {
   }
   const updatedArgs = joinSwitchAndValues(args);
   const parsedArgs = {
-    numOfLines: null,
+    numOfLines: 10,
     numOfChars: null,
     files: []
   };

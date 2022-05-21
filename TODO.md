@@ -1,7 +1,5 @@
 **TODO**
 
-- [ ] Write `main` connect with lib
-- [ ] Make `head` work values given by user from cmd-line
 - [ ] Changed default `numOfLines` from 3 to 10
 - [ ] Provide a `help` message
 - [ ] write a formatter to format the output for multiple files
@@ -14,6 +12,8 @@
 
 **DONE**
 
+- [x] Make `head` work values given by user from cmd-line
+- [x] Write `main` connect with lib
 - [x] added parser in headMain
 - [x] write `parser`
 - [x] `headMain` can take multiple file in argument

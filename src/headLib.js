@@ -14,8 +14,7 @@ const firstNChars = (content, sliceUpto) => {
   return content.slice(0, sliceUpto);
 };
 
-const head = (file, readFile, { numOfLines = 3, numOfChar }) => {
-  const content = readFile(file, 'utf8');
+const head = (content, { numOfLines, numOfChar }) => {
   const sliceUpto = numOfChar ? numOfChar : numOfLines;
   if (numOfChar) {
     return firstNChars(content, sliceUpto);
@@ -23,6 +22,15 @@ const head = (file, readFile, { numOfLines = 3, numOfChar }) => {
   return firstNLines(content, sliceUpto);
 };
 
+const headMain = (files, readFile, options) => {
+  const contents = files.map(file => {
+    const content = readFile(file, 'utf8');
+    return head(content, options);
+  });
+  return contents;
+};
+
+exports.headMain = headMain;
 exports.head = head;
 exports.firstNLines = firstNLines;
 exports.firstNChars = firstNChars;

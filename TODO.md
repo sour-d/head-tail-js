@@ -1,21 +1,21 @@
 **TODO**
 
-- [ ] `head` can take multiple file in argument
 - [ ] Write `main` connect with lib
 - [ ] write `parser`
 - [ ] Make `head` work values given by user from cmd-line
 - [ ] Changed default `numOfLines` from 3 to 10
 - [ ] Provide a `help` message
+- [ ] write a formatter to format the output for multiple files
 
 **IDEAS**
 
 - [ ] default line count will be assiged in parser
-- [ ] extract logic of choosing option from head
 - [ ] Move string ultil functions into another files
 - [ ] what if -n or -c is zero?
 
 **DONE**
 
+- [x] `headMain` can take multiple file in argument
 - [x] `head` can take one file in argument
 - [x] in `head` function, `content` will be changed to file paths
 - [x] separate -n and -c logic

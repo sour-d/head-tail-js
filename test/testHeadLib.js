@@ -82,8 +82,16 @@ describe('firstNChars', () => {
 describe('headMain', () => {
   it('Should return array of one line', () => {
     const mockedReadFile = mockReadFile(['./hello.txt'], ['hello']);
-    const actual = headMain(mockedReadFile, ['-n', 1, './hello.txt']);
+    const actual = headMain(mockedReadFile, ['-n', '1', './hello.txt']);
     assert.deepStrictEqual(actual, 'hello');
+  });
+
+  it('Should return array of single charecter of one file', () => {
+    const files = ['./hello.txt'];
+    const contents = ['hello'];
+    const mockedReadFile = mockReadFile(files, contents);
+    const actual = headMain(mockedReadFile, ['-c', '1', './hello.txt']);
+    assert.deepStrictEqual(actual, 'h');
   });
 
   it('Should return array of single line from each file', () => {
@@ -91,32 +99,11 @@ describe('headMain', () => {
     const contents = ['hello', 'bye'];
     const mockedReadFile = mockReadFile(files, contents);
     const actual = headMain(mockedReadFile, [
-      '-n', 1, './hello.txt', './bye.txt'
+      '-n', '1', './hello.txt', './bye.txt'
     ]);
     assert.deepStrictEqual(
       actual,
       '==> ./hello.txt <==\nhello\n\n==> ./bye.txt <==\nbye\n\n');
-  });
-
-  it('Should return array of 3 lines of each file', () => {
-    const files = ['./hello.txt', './bye.txt', './a.txt'];
-    const contents = ['1\n2\n3\n4', '1\n2\n3', '1\n2'];
-    const mockedReadFile = mockReadFile(files, contents);
-    const actual = headMain(mockedReadFile, [
-      '-n', 3, './hello.txt', './bye.txt', './a.txt'
-    ]);
-    assert.deepStrictEqual(
-      actual,
-      '==> ./hello.txt <==\n1\n2\n3\n\n==> ./bye.txt <==\n1\n2\n3\n\n==> ./a.txt <==\n1\n2\n\n'
-    );
-  });
-
-  it('Should return array of single charecter of one file', () => {
-    const files = ['./hello.txt'];
-    const contents = ['hello'];
-    const mockedReadFile = mockReadFile(files, contents);
-    const actual = headMain(mockedReadFile, ['-c', 1, './hello.txt']);
-    assert.deepStrictEqual(actual, 'h');
   });
 
   it('Should return array of single charecter of each file', () => {
@@ -124,9 +111,22 @@ describe('headMain', () => {
     const contents = ['hello', 'bye', 'a'];
     const mockedReadFile = mockReadFile(files, contents);
     const actual = headMain(mockedReadFile, [
-      '-c', 1, './hello.txt', './bye.txt', './a.txt'
+      '-c', '1', './hello.txt', './bye.txt', './a.txt'
     ]);
     assert.deepStrictEqual(actual, '==> ./hello.txt <==\nh\n\n==> ./bye.txt <==\nb\n\n==> ./a.txt <==\na\n\n');
+  });
+
+  it('Should return array of 3 lines of each file', () => {
+    const files = ['./hello.txt', './bye.txt', './a.txt'];
+    const contents = ['1\n2\n3\n4', '1\n2\n3', '1\n2'];
+    const mockedReadFile = mockReadFile(files, contents);
+    const actual = headMain(mockedReadFile, [
+      '-n', '3', './hello.txt', './bye.txt', './a.txt'
+    ]);
+    assert.deepStrictEqual(
+      actual,
+      '==> ./hello.txt <==\n1\n2\n3\n\n==> ./bye.txt <==\n1\n2\n3\n\n==> ./a.txt <==\n1\n2\n\n'
+    );
   });
 
   it('Should return array of 2 charecters of each file', () => {
@@ -134,9 +134,43 @@ describe('headMain', () => {
     const contents = ['hello', 'bye', 'a'];
     const mockedReadFile = mockReadFile(files, contents);
     const actual = headMain(mockedReadFile, [
-      '-c', 2, './hello.txt', './bye.txt', './a.txt'
+      '-c', '2', './hello.txt', './bye.txt', './a.txt'
     ]);
     assert.deepStrictEqual(actual, '==> ./hello.txt <==\nhe\n\n==> ./bye.txt <==\nby\n\n==> ./a.txt <==\na\n\n');
+  });
+
+  it('Should return error if invalid switches', () => {
+    const files = ['./hello.txt'];
+    const contents = ['hello'];
+    const mockedReadFile = mockReadFile(files, contents);
+    const actual = headMain(mockedReadFile, ['-a', 2, './hello.txt']);
+    assert.deepStrictEqual(actual, 'head: illegal option -- a');
+  });
+
+  it('Should return error if both switches are present', () => {
+    const files = ['./hello.txt'];
+    const contents = ['hello'];
+    const mockedReadFile = mockReadFile(files, contents);
+    const actual = headMain(mockedReadFile, [
+      '-n', '2', '-c', '1', './ hello.txt'
+    ]);
+    assert.deepStrictEqual(
+      actual,
+      'head: can\'t combine line and byte counts'
+    );
+  });
+
+  it('Should return error if file name is not present', () => {
+    const files = [];
+    const contents = [];
+    const mockedReadFile = mockReadFile(files, contents);
+    const actual = headMain(mockedReadFile, [
+      '-n', '2'
+    ]);
+    assert.deepStrictEqual(
+      actual,
+      'usage: head [-n lines | -c bytes] [file ...]'
+    );
   });
 });
 

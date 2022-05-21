@@ -33,7 +33,13 @@ const formatOutput = function (contents, files) {
 };
 
 const headMain = (readFile, args) => {
-  const { files, numOfChars, numOfLines } = parseArgs(args);
+  let parsedData;
+  try {
+    parsedData = parseArgs(args);
+  } catch (error) {
+    return error.name + ': ' + error.message;
+  }
+  const { files, numOfChars, numOfLines = 10 } = parsedData;
   if (!files.length) {
     return 'usage: head [-n lines | -c bytes] [file ...]';
   }

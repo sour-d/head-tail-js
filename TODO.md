@@ -1,11 +1,9 @@
 **TODO**
 
 - [ ] Changed default `numOfLines` from 3 to 10
-- [ ] Provide a `help` message
 
 **IDEAS**
 
-- [ ] validation
 - [ ] -1
 - [ ] deafult
 - [ ] large file
@@ -15,6 +13,8 @@
 
 **DONE**
 
+- [x] validation
+- [x] Provide a `help` message
 - [x] help
 - [x] write a formatter to format the output for multiple files
 - [x] Make `head` work values given by user from cmd-line

@@ -1,5 +1,6 @@
 const { parseArgs } = require('./parse.js');
 const NEWLINE = '\n';
+const UASAGE = 'usage: head [-n lines | -c bytes] [file ...]';
 
 const split = (content, delimeter) => content.split(delimeter);
 
@@ -23,40 +24,58 @@ const head = (content, { numOfLines, numOfChars }) => {
   return firstNLines(content, sliceUpto);
 };
 
-const identity = (fileName, content) => content;
+const identity = ({ content }) => content;
 
-const outputFormatter = (fileName, content, index) => {
+const outputFormatter = ({ file, content }, index) => {
   const separater = index === 0 ? '' : '\n';
-  return `${separater}==> ${fileName} <==\n${content}`;
+  return `${separater}==> ${file} <==\n${content}`;
 };
 
-// eslint-disable-next-line max-statements
-const headMain = (readFile, args, displayOutput, displayError) => {
-  let parsedData;
-  try {
-    parsedData = parseArgs(args);
-  } catch (error) {
-    displayError(error.message.join('\n'));
-    return;
-  }
-  const { files, numOfChars, numOfLines = 10 } = parsedData;
+const readFileContent = (files, fileReader) => {
   if (!files.length) {
-    displayError('usage: head [-n lines | -c bytes] [file ...]');
-    return;
+    throw { message: [UASAGE] };
   }
-  const formatter = files.length === 1 ? identity : outputFormatter;
-  files.forEach((file, index) => {
+  return files.map((file) => {
     try {
-      const formattedOutput = formatter(
-        file,
-        head(readFile(file, 'utf8'), { numOfChars, numOfLines }),
-        index
-      );
-      displayOutput(formattedOutput);
+      return {
+        content: fileReader(file, 'utf8'), file
+      };
     } catch (error) {
-      displayError(`head: ${file}: No such file or directory`);
+      return {
+        message: `head: ${file}: No such file or directory`
+      };
     }
   });
+
+};
+
+const display = (headedContents, formatter, displayOutput, displayError) => {
+  headedContents.forEach(function (headedContent, index) {
+    if (headedContent.content) {
+      displayOutput(formatter(headedContent, index));
+      return;
+    }
+    displayError(headedContent.message);
+  });
+};
+
+const headMain = (readFile, args, displayOutput, displayError) => {
+  try {
+    const parsedData = parseArgs(args);
+    const { files, numOfChars, numOfLines = 10 } = parsedData;
+    const options = { numOfChars, numOfLines };
+    const formatter = files.length === 1 ? identity : outputFormatter;
+    const fileContents = readFileContent(files, readFile);
+    fileContents.forEach(fileContent => {
+      if (fileContent.content) {
+        fileContent.content = head(fileContent.content, options);
+      }
+      return fileContent;
+    });
+    display(fileContents, formatter, displayOutput, displayError);
+  } catch (error) {
+    displayError(error.message.join('\n'));
+  }
 };
 
 exports.headMain = headMain;
@@ -64,3 +83,6 @@ exports.head = head;
 exports.firstNLines = firstNLines;
 exports.firstNChars = firstNChars;
 exports.outputFormatter = outputFormatter;
+exports.readFileContent = readFileContent;
+exports.readFileContent = readFileContent;
+exports.display = display;

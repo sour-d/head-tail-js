@@ -3,7 +3,9 @@ const {
   firstNLines,
   firstNChars,
   headMain,
-  outputFormatter
+  outputFormatter,
+  readFileContent,
+  display
 } = require('../src/headLib.js');
 const assert = require('assert');
 
@@ -221,11 +223,74 @@ describe('headMain', () => {
 
 describe('outputFormatter', () => {
   it('should return formatted content', () => {
+    const fileContent = {
+      file: '1.txt',
+      content: '1'
+    };
     assert.deepStrictEqual(
-      outputFormatter('1.txt', '1', 0),
-      '==> 1.txt <==\n1');
+      outputFormatter(fileContent, 0), '==> 1.txt <==\n1'
+    );
     assert.deepStrictEqual(
-      outputFormatter('1.txt', '1', 1),
-      '\n==> 1.txt <==\n1');
+      outputFormatter(fileContent, 1), '\n==> 1.txt <==\n1'
+    );
+  });
+});
+
+describe('readFileContent', () => {
+  it('Should return array of file content', () => {
+    const mockedReadFile = mockReadFile(['hello.txt'], ['hello']);
+    const actual = readFileContent(['hello.txt'], mockedReadFile);
+    const expected = [
+      { file: 'hello.txt', content: 'hello' }
+    ];
+    assert.deepStrictEqual(actual, expected);
+  });
+
+  it('Should return array containing error if file not readable', () => {
+    const mockedReadFile = mockReadFile(['1.txt'], ['1']);
+    const actual = readFileContent(['1.txt', '2.txt'], mockedReadFile);
+    const expected = [
+      { file: '1.txt', content: '1' },
+      { message: 'head: 2.txt: No such file or directory' }
+    ];
+    assert.deepStrictEqual(actual, expected);
+  });
+
+  it('Should throw error if not file is there', () => {
+    const mockedReadFile = mockReadFile([], []);
+    assert.throws(() => readFileContent([], mockedReadFile));
+  });
+});
+
+describe('display', () => {
+  it('Should display headed contents', () => {
+    const contents = [{ file: 'hello.txt', content: 'hello' }];
+    const mockedDisplayOutput = mockConsoleFn(['hello']);
+    const mockedDisplayError = mockConsoleFn([]);
+    display(
+      contents,
+      ({ content }) => content,
+      mockedDisplayOutput.log,
+      mockedDisplayError.error
+    );
+    assert.strictEqual(mockedDisplayOutput.count(), 1);
+    assert.strictEqual(mockedDisplayError.count(), 0);
+  });
+
+  it('Should display headed contents and error also', () => {
+    const contents = [
+      { file: 'hello.txt', content: 'hello' },
+      { message: 'its a error' }
+    ];
+    const mockedDisplayOutput = mockConsoleFn(['hello']);
+    const mockedDisplayError = mockConsoleFn(['its a error']);
+    display(
+      contents,
+      ({ content }) => content,
+      mockedDisplayOutput.log,
+      mockedDisplayError.error
+    );
+    assert.strictEqual(mockedDisplayOutput.count(), 1);
+    assert.strictEqual(mockedDisplayError.count(), 1);
   });
 });

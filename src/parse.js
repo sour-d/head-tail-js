@@ -1,3 +1,4 @@
+/* eslint-disable max-statements */
 const isSwitch = (word) => {
   return word.indexOf('-') === 0;
 };
@@ -11,7 +12,9 @@ const bothSwitchesPresent = (args, switchList) => {
 
 const findInvallidSwitch = (data, validSwitchList) => {
   for (let index = 0; index < data.length; index++) {
-    const switchName = data[index].slice(0, 2);
+    // const switchName = data[index].slice(0, 2);
+    const switchName = data[index].match(/^-[a-z]*/)[0];
+    let switchValue = data[index].match(/[\d]*$/)[0];
     if (isSwitch(switchName)) {
       if (!validSwitchList.includes(switchName)) {
         return switchName.slice(1);
@@ -34,17 +37,6 @@ const iterate = (args) => {
 };
 
 const validateArgs = (args, validSwitchList) => {
-  const invalidSwith = findInvallidSwitch(args, Object.keys(validSwitchList));
-  if (invalidSwith) {
-    throw {
-      type: 'error',
-      message: [
-        'head: illegal option -- ' + invalidSwith,
-        'usage: head [-n lines | -c bytes] [file ...]'
-      ]
-    };
-  }
-
   if (bothSwitchesPresent(args, Object.keys(validSwitchList))) {
     throw {
       type: 'error',
@@ -77,6 +69,7 @@ const parseValuesToInt = (parsedArgs) => {
 };
 
 // eslint-disable-next-line max-statements
+// eslint-disable-next-line complexity
 const parseArgs = (args) => {
   const switchList = {
     '-n': 'numOfLines',
@@ -91,6 +84,15 @@ const parseArgs = (args) => {
       let switchValue = argsIterator.current().match(/[\d]*$/)[0];
       if (switchValue === '') {
         switchValue = argsIterator.next();
+      }
+      if (!switchList[switchName]) {
+        throw {
+          type: 'error',
+          message: [
+            'head: illegal option -- ' + switchName.match(/[a-z]+/i)[0],
+            'usage: head [-n lines | -c bytes] [file ...]'
+          ]
+        };
       }
       parsedArgs[switchList[switchName]] = switchValue;
     } else {

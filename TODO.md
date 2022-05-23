@@ -1,21 +1,20 @@
 **TODO**
 
 - [ ] validation will be separated
-- [ ] -1
 - [ ] large file
 
 **IDEAS**
 
-- [ ] default line count will be assiged in parser
 - [ ] Move string ultil functions into another files
 - [ ] what if -n or -c is zero?
 
 **DONE**
 
+- [x] -1
 - [x] Validation
   - [x] -n, -c should not be together
   - [x] after switch, there should be a integer value
-  - [ ] -1 is possible
+  - [x] -1 is possible
 - [x] error from error stream only
 - [x] main will call function to display output or error
 - [x] store file read error in object

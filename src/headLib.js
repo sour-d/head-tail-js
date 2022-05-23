@@ -29,7 +29,6 @@ const outputFormatter = (fileName, content) => {
   return `==> ${fileName} <==\n${content}\n`;
 };
 
-
 // eslint-disable-next-line max-statements
 const headMain = (readFile, args, displayOutput, displayError) => {
   let parsedData;

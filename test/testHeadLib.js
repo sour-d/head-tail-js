@@ -21,7 +21,12 @@ const mockConsoleFn = (contents) => {
   let count = 0;
   return {
     count: () => count,
-    fn: (message) => {
+    log: (message) => {
+      assert.strictEqual(contents[count], message);
+      count++;
+      return message;
+    },
+    error: (message) => {
       assert.strictEqual(contents[count], message);
       count++;
       return message;
@@ -99,8 +104,8 @@ describe('headMain', () => {
     headMain(
       mockedReadFile,
       ['-n', '1', './hello.txt'],
-      mockedDisplayOutput.fn,
-      mockedDisplayError.fn
+      mockedDisplayOutput.log,
+      mockedDisplayError.error
     );
 
     assert.strictEqual(mockedDisplayOutput.count(), 1);
@@ -116,8 +121,8 @@ describe('headMain', () => {
     headMain(
       mockedReadFile,
       ['-c', '1', './hello.txt'],
-      mockedDisplayOutput.fn,
-      mockedDisplayError.fn
+      mockedDisplayOutput.log,
+      mockedDisplayError.error
     );
     assert.strictEqual(mockedDisplayOutput.count(), 1);
     assert.strictEqual(mockedDisplayError.count(), 0);
@@ -135,8 +140,8 @@ describe('headMain', () => {
     headMain(
       mockedReadFile,
       ['-n', '1', 'hello.txt', 'bye.txt'],
-      mockedDisplayOutput.fn,
-      mockedDisplayError.fn
+      mockedDisplayOutput.log,
+      mockedDisplayError.error
     );
     assert.strictEqual(mockedDisplayOutput.count(), 2);
     assert.strictEqual(mockedDisplayError.count(), 0);
@@ -154,8 +159,8 @@ describe('headMain', () => {
     headMain(
       mockedReadFile,
       ['-c', '1', 'hello.txt', 'bye.txt'],
-      mockedDisplayOutput.fn,
-      mockedDisplayError.fn
+      mockedDisplayOutput.log,
+      mockedDisplayError.error
     );
     assert.strictEqual(mockedDisplayOutput.count(), 2);
     assert.strictEqual(mockedDisplayError.count(), 0);
@@ -172,8 +177,8 @@ describe('headMain', () => {
     headMain(
       mockedReadFile,
       ['-a', '1', 'hello.txt'],
-      mockedDisplayOutput.fn,
-      mockedDisplayError.fn
+      mockedDisplayOutput.log,
+      mockedDisplayError.error
     );
     assert.strictEqual(mockedDisplayOutput.count(), 0);
     assert.strictEqual(mockedDisplayError.count(), 1);
@@ -190,8 +195,8 @@ describe('headMain', () => {
     headMain(
       mockedReadFile,
       ['-n', '1', '-c1', 'hello.txt'],
-      mockedDisplayOutput.fn,
-      mockedDisplayError.fn
+      mockedDisplayOutput.log,
+      mockedDisplayError.error
     );
     assert.strictEqual(mockedDisplayOutput.count(), 0);
     assert.strictEqual(mockedDisplayError.count(), 1);
@@ -206,8 +211,8 @@ describe('headMain', () => {
     headMain(
       mockedReadFile,
       ['-n', '1'],
-      mockedDisplayOutput.fn,
-      mockedDisplayError.fn
+      mockedDisplayOutput.log,
+      mockedDisplayError.error
     );
     assert.strictEqual(mockedDisplayOutput.count(), 0);
     assert.strictEqual(mockedDisplayError.count(), 1);

@@ -58,6 +58,14 @@ describe('parseArgs', () => {
     };
     assert.deepStrictEqual(parseArgs(['-c1', './1.txt']), expected);
   });
+
+  it('Should consider -[DIGITS] as valid key', () => {
+    const expected = {
+      numOfLines: 1,
+      files: ['./1.txt']
+    };
+    assert.deepStrictEqual(parseArgs(['-1', './1.txt']), expected);
+  });
 });
 
 describe('isSwitch', () => {

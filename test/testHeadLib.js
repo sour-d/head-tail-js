@@ -3,7 +3,7 @@ const {
   firstNLines,
   firstNChars,
   headMain,
-  formatOutput
+  outputFormatter
 } = require('../src/headLib.js');
 const assert = require('assert');
 
@@ -14,6 +14,18 @@ const mockReadFile = (fileName, content) => {
     assert.strictEqual(fileName[count - 1], fileToRead);
     assert.strictEqual(encoding, 'utf8');
     return content[count - 1];
+  };
+};
+
+const mockConsoleFn = (contents) => {
+  let count = 0;
+  return {
+    count: () => count,
+    fn: (message) => {
+      assert.strictEqual(contents[count], message);
+      count++;
+      return message;
+    }
   };
 };
 
@@ -82,85 +94,130 @@ describe('firstNChars', () => {
 describe('headMain', () => {
   it('Should return array of one line', () => {
     const mockedReadFile = mockReadFile(['./hello.txt'], ['hello']);
-    const actual = headMain(mockedReadFile, ['-n', '1', './hello.txt']);
-    assert.deepStrictEqual(actual, 'hello');
+    const mockedDisplayOutput = mockConsoleFn(['hello']);
+    const mockedDisplayError = mockConsoleFn([]);
+    headMain(
+      mockedReadFile,
+      ['-n', '1', './hello.txt'],
+      mockedDisplayOutput.fn,
+      mockedDisplayError.fn
+    );
+
+    assert.strictEqual(mockedDisplayOutput.count(), 1);
+    assert.strictEqual(mockedDisplayError.count(), 0);
   });
 
   it('Should return array of single charecter of one file', () => {
     const files = ['./hello.txt'];
     const contents = ['hello'];
     const mockedReadFile = mockReadFile(files, contents);
-    const actual = headMain(mockedReadFile, ['-c', '1', './hello.txt']);
-    assert.deepStrictEqual(actual, 'h');
+    const mockedDisplayOutput = mockConsoleFn(['h']);
+    const mockedDisplayError = mockConsoleFn([]);
+    headMain(
+      mockedReadFile,
+      ['-c', '1', './hello.txt'],
+      mockedDisplayOutput.fn,
+      mockedDisplayError.fn
+    );
+    assert.strictEqual(mockedDisplayOutput.count(), 1);
+    assert.strictEqual(mockedDisplayError.count(), 0);
   });
 
   it('Should return array of single line from each file', () => {
-    const files = ['./hello.txt', './bye.txt'];
-    const contents = ['hello', 'bye'];
+    const files = ['hello.txt', 'bye.txt'];
+    const contents = ['hello', 'bye\nbyebye'];
     const mockedReadFile = mockReadFile(files, contents);
-    const actual = headMain(mockedReadFile, [
-      '-n', '1', './hello.txt', './bye.txt'
+    const mockedDisplayOutput = mockConsoleFn([
+      '==> hello.txt <==\nhello\n',
+      '==> bye.txt <==\nbye\n',
     ]);
-    assert.deepStrictEqual(
-      actual,
-      '==> ./hello.txt <==\nhello\n\n==> ./bye.txt <==\nbye'
+    const mockedDisplayError = mockConsoleFn([]);
+    headMain(
+      mockedReadFile,
+      ['-n', '1', 'hello.txt', 'bye.txt'],
+      mockedDisplayOutput.fn,
+      mockedDisplayError.fn
     );
+    assert.strictEqual(mockedDisplayOutput.count(), 2);
+    assert.strictEqual(mockedDisplayError.count(), 0);
   });
 
   it('Should return array of single charecter of each file', () => {
-    const files = ['./hello.txt', './bye.txt', './a.txt'];
-    const contents = ['hello', 'bye', 'a'];
+    const files = ['hello.txt', 'bye.txt'];
+    const contents = ['hello', 'bye\nbyebye'];
     const mockedReadFile = mockReadFile(files, contents);
-    const actual = headMain(mockedReadFile, [
-      '-c', '1', './hello.txt', './bye.txt', './a.txt'
+    const mockedDisplayOutput = mockConsoleFn([
+      '==> hello.txt <==\nh\n',
+      '==> bye.txt <==\nb\n',
     ]);
-    assert.deepStrictEqual(
-      actual,
-      '==> ./hello.txt <==\nh\n\n==> ./bye.txt <==\nb\n\n==> ./a.txt <==\na'
+    const mockedDisplayError = mockConsoleFn([]);
+    headMain(
+      mockedReadFile,
+      ['-c', '1', 'hello.txt', 'bye.txt'],
+      mockedDisplayOutput.fn,
+      mockedDisplayError.fn
     );
+    assert.strictEqual(mockedDisplayOutput.count(), 2);
+    assert.strictEqual(mockedDisplayError.count(), 0);
   });
 
   it('Should return error if invalid switches', () => {
-    const files = ['./hello.txt'];
+    const files = ['hello.txt'];
     const contents = ['hello'];
     const mockedReadFile = mockReadFile(files, contents);
-    const actual = headMain(mockedReadFile, ['-a', 2, './hello.txt']);
-    assert.deepStrictEqual(actual, 'head: illegal option -- a');
+    const mockedDisplayOutput = mockConsoleFn([]);
+    const mockedDisplayError = mockConsoleFn([
+      'head: illegal option -- a\nusage: head [-n lines | -c bytes] [file ...]'
+    ]);
+    headMain(
+      mockedReadFile,
+      ['-a', '1', 'hello.txt'],
+      mockedDisplayOutput.fn,
+      mockedDisplayError.fn
+    );
+    assert.strictEqual(mockedDisplayOutput.count(), 0);
+    assert.strictEqual(mockedDisplayError.count(), 1);
   });
 
   it('Should return error if both switches are present', () => {
-    const files = ['./hello.txt'];
+    const files = ['hello.txt'];
     const contents = ['hello'];
     const mockedReadFile = mockReadFile(files, contents);
-    const actual = headMain(mockedReadFile, [
-      '-n', '2', '-c', '1', './ hello.txt'
-    ]);
-    assert.deepStrictEqual(
-      actual,
+    const mockedDisplayOutput = mockConsoleFn([]);
+    const mockedDisplayError = mockConsoleFn([
       'head: can\'t combine line and byte counts'
+    ]);
+    headMain(
+      mockedReadFile,
+      ['-n', '1', '-c1', 'hello.txt'],
+      mockedDisplayOutput.fn,
+      mockedDisplayError.fn
     );
+    assert.strictEqual(mockedDisplayOutput.count(), 0);
+    assert.strictEqual(mockedDisplayError.count(), 1);
   });
 
   it('Should return error if file name is not present', () => {
-    const files = [];
-    const contents = [];
-    const mockedReadFile = mockReadFile(files, contents);
-    const actual = headMain(mockedReadFile, [
-      '-n', '2'
-    ]);
-    assert.deepStrictEqual(
-      actual,
+    const mockedReadFile = mockReadFile([], []);
+    const mockedDisplayOutput = mockConsoleFn([]);
+    const mockedDisplayError = mockConsoleFn([
       'usage: head [-n lines | -c bytes] [file ...]'
+    ]);
+    headMain(
+      mockedReadFile,
+      ['-n', '1'],
+      mockedDisplayOutput.fn,
+      mockedDisplayError.fn
     );
+    assert.strictEqual(mockedDisplayOutput.count(), 0);
+    assert.strictEqual(mockedDisplayError.count(), 1);
   });
 });
 
-describe('formatOutput', () => {
-  it('should return first element', () => {
-    assert.deepStrictEqual(formatOutput(['hello'], ['hello.txt']), 'hello');
-  });
-
-  it('should return all formatted content', () => {
-    assert.deepStrictEqual(formatOutput(['1', '2'], ['1.txt', '2.txt']), '==> 1.txt <==\n1\n\n==> 2.txt <==\n2');
+describe('outputFormatter', () => {
+  it('should return formatted content', () => {
+    assert.deepStrictEqual(
+      outputFormatter('1.txt', 1),
+      '==> 1.txt <==\n1\n');
   });
 });

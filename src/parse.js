@@ -2,14 +2,14 @@ const isSwitch = (word) => {
   return word.indexOf('-') === 0;
 };
 
-const areSwitchesPresent = (args, switchList) => {
+const bothSwitchesPresent = (args, switchList) => {
   return switchList.reduce((result, switchName) => {
     const regex = /switch/;
     return regex.compile(switchName).test(args.join(' ')) && result;
   }, true);
 };
 
-const isValidSwitches = (data, validSwitchList) => {
+const findInvallidSwitch = (data, validSwitchList) => {
   for (let index = 0; index < data.length; index++) {
     const switchName = data[index].slice(0, 2);
     if (isSwitch(switchName)) {
@@ -18,64 +18,91 @@ const isValidSwitches = (data, validSwitchList) => {
       }
     }
   }
-  // return true;
 };
 
-const updateParseArgs = (arg, data, switchList) => {
-  if (isSwitch(arg)) {
-    const switchName = switchList[arg.slice(0, 2)];
-    data[switchName] = +arg.slice(2);
-    return data;
-  }
-  data.files.push(arg);
-  return data;
-};
-
-const joinSwitchAndValues = data => {
-  const updatedData = [];
-  let index = 0;
-  while (index < data.length) {
-    let newValue = data[index];
-    if (isSwitch(data[index]) && data[index].length === 2) {
-      newValue = `${data[index]}${data[index + 1]}`;
+const iterate = (args) => {
+  let index = -1;
+  return {
+    current: function () {
+      return args[index];
+    },
+    next: function () {
       index++;
+      return args[index];
     }
-    updatedData.push(newValue);
-    index++;
-  }
-  return updatedData;
+  };
 };
 
-const parseArgs = (args) => {
-  const switchList = { '-n': 'numOfLines', '-c': 'numOfChars' };
-  if (areSwitchesPresent(args, Object.keys(switchList))) {
+const validateArgs = (args, validSwitchList) => {
+  const invalidSwith = findInvallidSwitch(args, Object.keys(validSwitchList));
+  if (invalidSwith) {
     throw {
-      name: 'head',
-      message: 'can\'t combine line and byte counts'
+      type: 'error',
+      message: [
+        'head: illegal option -- ' + invalidSwith,
+        'usage: head [-n lines | -c bytes] [file ...]'
+      ]
     };
   }
-  if (isValidSwitches(args, Object.keys(switchList))) {
+
+  if (bothSwitchesPresent(args, Object.keys(validSwitchList))) {
     throw {
-      name: 'head',
-      message:
-        `illegal option -- ${isValidSwitches(args, Object.keys(switchList))}`
+      type: 'error',
+      message: ['head: can\'t combine line and byte counts']
     };
   }
-  const updatedArgs = joinSwitchAndValues(args);
-  const parsedArgs = {
-    numOfLines: 10,
-    numOfChars: null,
-    files: []
-  };
-  for (let index = 0; index < updatedArgs.length; index++) {
-    updateParseArgs(updatedArgs[index], parsedArgs, switchList);
+};
+
+const parseValuesToInt = (parsedArgs) => {
+  if (parsedArgs.numOfChars) {
+    if (!isFinite(+parsedArgs.numOfChars)) {
+      throw {
+        type: 'error',
+        message: ['head: illegal byte count -- ' + parsedArgs.numOfChars]
+      };
+    } else {
+      parsedArgs.numOfChars = +parsedArgs.numOfChars;
+    }
+  }
+  if (parsedArgs.numOfLines) {
+    if (!isFinite(+parsedArgs.numOfLines)) {
+      throw {
+        type: 'error',
+        message: ['head: illegal line count -- ' + parsedArgs.numOfLines]
+      };
+    } else {
+      parsedArgs.numOfLines = +parsedArgs.numOfLines;
+    }
   }
   return parsedArgs;
 };
 
+// eslint-disable-next-line max-statements
+const parseArgs = (args) => {
+  const switchList = {
+    '-n': 'numOfLines',
+    '-c': 'numOfChars',
+    '-': 'numOfLines'
+  };
+  validateArgs(args, switchList);
+  const parsedArgs = { files: [] };
+  const argsIterator = iterate(args);
+  while (argsIterator.next()) {
+    if (isSwitch(argsIterator.current())) {
+      const switchName = argsIterator.current().match(/^-[a-z]*/)[0];
+      let switchValue = argsIterator.current().match(/[\d]*$/)[0];
+      if (switchValue === '') {
+        switchValue = argsIterator.next();
+      }
+      parsedArgs[switchList[switchName]] = switchValue;
+    } else {
+      parsedArgs.files.push(argsIterator.current());
+    }
+  }
+  return parseValuesToInt(parsedArgs);
+};
+
 exports.parseArgs = parseArgs;
-exports.joinSwitchAndValues = joinSwitchAndValues;
-exports.updateParseArgs = updateParseArgs;
 exports.isSwitch = isSwitch;
-exports.areSwitchesPresent = areSwitchesPresent;
-exports.isValidSwitches = isValidSwitches;
+exports.areSwitchesPresent = bothSwitchesPresent;
+exports.isValidSwitches = findInvallidSwitch;

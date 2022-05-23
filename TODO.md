@@ -1,17 +1,24 @@
 **TODO**
 
-- [ ] Changed default `numOfLines` from 3 to 10
+- [ ] validation will be separated
+- [ ] -1
+- [ ] large file
 
 **IDEAS**
 
-- [ ] -1
-- [ ] large file
 - [ ] default line count will be assiged in parser
 - [ ] Move string ultil functions into another files
 - [ ] what if -n or -c is zero?
 
 **DONE**
 
+- [x] Validation
+  - [x] -n, -c should not be together
+  - [x] after switch, there should be a integer value
+  - [ ] -1 is possible
+- [x] error from error stream only
+- [x] main will call function to display output or error
+- [x] store file read error in object
 - [x] read file error
 - [x] deafult
 - [x] validation

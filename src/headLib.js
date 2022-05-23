@@ -23,39 +23,42 @@ const head = (content, { numOfLines, numOfChars }) => {
   return firstNLines(content, sliceUpto);
 };
 
-const formatOutput = function (contents, files) {
-  if (contents.length === 1) {
-    return contents[0];
-  }
-  const formattedOutput = contents.map((content, index) => {
-    return `==> ${files[index]} <==\n${content}`;
-  });
-  return formattedOutput.join('\n\n');
+const identity = (fileName, content) => content;
+
+const outputFormatter = (fileName, content) => {
+  return `==> ${fileName} <==\n${content}\n`;
 };
 
-const headMain = (readFile, args) => {
+
+const headMain = (readFile, args, displayOutput, displayError) => {
   let parsedData;
   try {
     parsedData = parseArgs(args);
   } catch (error) {
-    return error.name + ': ' + error.message;
+    displayError(error.message.join('\n'));
+    return;
   }
-  const { files, numOfChars, numOfLines } = parsedData;
+  const { files, numOfChars, numOfLines = 10 } = parsedData;
   if (!files.length) {
-    return 'usage: head [-n lines | -c bytes] [file ...]';
+    displayError('usage: head [-n lines | -c bytes] [file ...]');
+    return;
   }
-  const contents = files.map(file => {
+  const formatter = files.length === 1 ? identity : outputFormatter;
+  files.forEach(file => {
     try {
-      return head(readFile(file, 'utf8'), { numOfChars, numOfLines });
+      const formattedOutput = formatter(
+        file,
+        head(readFile(file, 'utf8'), { numOfChars, numOfLines })
+      );
+      displayOutput(formattedOutput);
     } catch (error) {
-      return `head: ${file}: No such file or directory`;
+      displayError(`head: ${file}: No such file or directory`);
     }
   });
-  return formatOutput(contents, files);
 };
 
 exports.headMain = headMain;
 exports.head = head;
 exports.firstNLines = firstNLines;
 exports.firstNChars = firstNChars;
-exports.formatOutput = formatOutput;
+exports.outputFormatter = outputFormatter;

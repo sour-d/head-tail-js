@@ -53,6 +53,7 @@ const validateArgs = (args, validSwitchList) => {
   }
 };
 
+// eslint-disable-next-line complexity
 const parseValuesToInt = (parsedArgs) => {
   if (parsedArgs.numOfChars) {
     if (!isFinite(+parsedArgs.numOfChars)) {
@@ -60,9 +61,8 @@ const parseValuesToInt = (parsedArgs) => {
         type: 'error',
         message: ['head: illegal byte count -- ' + parsedArgs.numOfChars]
       };
-    } else {
-      parsedArgs.numOfChars = +parsedArgs.numOfChars;
     }
+    parsedArgs.numOfChars = +parsedArgs.numOfChars;
   }
   if (parsedArgs.numOfLines) {
     if (!isFinite(+parsedArgs.numOfLines)) {
@@ -70,9 +70,8 @@ const parseValuesToInt = (parsedArgs) => {
         type: 'error',
         message: ['head: illegal line count -- ' + parsedArgs.numOfLines]
       };
-    } else {
-      parsedArgs.numOfLines = +parsedArgs.numOfLines;
     }
+    parsedArgs.numOfLines = +parsedArgs.numOfLines;
   }
   return parsedArgs;
 };
@@ -84,7 +83,6 @@ const parseArgs = (args) => {
     '-c': 'numOfChars',
     '-': 'numOfLines'
   };
-  validateArgs(args, switchList);
   const parsedArgs = { files: [] };
   const argsIterator = iterate(args);
   while (argsIterator.next()) {
@@ -99,7 +97,9 @@ const parseArgs = (args) => {
       parsedArgs.files.push(argsIterator.current());
     }
   }
-  return parseValuesToInt(parsedArgs);
+  parseValuesToInt(parsedArgs);
+  validateArgs(args, switchList);
+  return parsedArgs;
 };
 
 exports.parseArgs = parseArgs;

@@ -30,6 +30,7 @@ const outputFormatter = (fileName, content) => {
 };
 
 
+// eslint-disable-next-line max-statements
 const headMain = (readFile, args, displayOutput, displayError) => {
   let parsedData;
   try {

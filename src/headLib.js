@@ -25,8 +25,9 @@ const head = (content, { numOfLines, numOfChars }) => {
 
 const identity = (fileName, content) => content;
 
-const outputFormatter = (fileName, content) => {
-  return `==> ${fileName} <==\n${content}\n`;
+const outputFormatter = (fileName, content, index) => {
+  const separater = index === 0 ? '' : '\n';
+  return `${separater}==> ${fileName} <==\n${content}`;
 };
 
 // eslint-disable-next-line max-statements
@@ -44,14 +45,17 @@ const headMain = (readFile, args, displayOutput, displayError) => {
     return;
   }
   const formatter = files.length === 1 ? identity : outputFormatter;
-  files.forEach(file => {
+  files.forEach((file, index) => {
     try {
       const formattedOutput = formatter(
         file,
-        head(readFile(file, 'utf8'), { numOfChars, numOfLines })
+        head(readFile(file, 'utf8'), { numOfChars, numOfLines }),
+        index
       );
+      console.log(formattedOutput);
       displayOutput(formattedOutput);
     } catch (error) {
+      console.log(error);
       displayError(`head: ${file}: No such file or directory`);
     }
   });

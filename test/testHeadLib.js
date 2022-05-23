@@ -133,8 +133,8 @@ describe('headMain', () => {
     const contents = ['hello', 'bye\nbyebye'];
     const mockedReadFile = mockReadFile(files, contents);
     const mockedDisplayOutput = mockConsoleFn([
-      '==> hello.txt <==\nhello\n',
-      '==> bye.txt <==\nbye\n',
+      '==> hello.txt <==\nhello',
+      '\n==> bye.txt <==\nbye',
     ]);
     const mockedDisplayError = mockConsoleFn([]);
     headMain(
@@ -152,8 +152,8 @@ describe('headMain', () => {
     const contents = ['hello', 'bye\nbyebye'];
     const mockedReadFile = mockReadFile(files, contents);
     const mockedDisplayOutput = mockConsoleFn([
-      '==> hello.txt <==\nh\n',
-      '==> bye.txt <==\nb\n',
+      '==> hello.txt <==\nh',
+      '\n==> bye.txt <==\nb',
     ]);
     const mockedDisplayError = mockConsoleFn([]);
     headMain(
@@ -222,7 +222,10 @@ describe('headMain', () => {
 describe('outputFormatter', () => {
   it('should return formatted content', () => {
     assert.deepStrictEqual(
-      outputFormatter('1.txt', 1),
-      '==> 1.txt <==\n1\n');
+      outputFormatter('1.txt', '1', 0),
+      '==> 1.txt <==\n1');
+    assert.deepStrictEqual(
+      outputFormatter('1.txt', '1', 1),
+      '\n==> 1.txt <==\n1');
   });
 });

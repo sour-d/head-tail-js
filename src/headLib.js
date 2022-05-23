@@ -52,10 +52,8 @@ const headMain = (readFile, args, displayOutput, displayError) => {
         head(readFile(file, 'utf8'), { numOfChars, numOfLines }),
         index
       );
-      console.log(formattedOutput);
       displayOutput(formattedOutput);
     } catch (error) {
-      console.log(error);
       displayError(`head: ${file}: No such file or directory`);
     }
   });

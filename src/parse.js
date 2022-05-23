@@ -3,23 +3,12 @@ const isSwitch = (word) => {
   return word.indexOf('-') === 0;
 };
 
-const bothSwitchesPresent = (args, switchList) => {
-  return switchList.reduce((result, switchName) => {
-    const regex = /switch/;
-    return regex.compile(switchName).test(args.join(' ')) && result;
-  }, true);
-};
-
-const findInvallidSwitch = (data, validSwitchList) => {
-  for (let index = 0; index < data.length; index++) {
-    // const switchName = data[index].slice(0, 2);
-    const switchName = data[index].match(/^-[a-z]*/)[0];
-    let switchValue = data[index].match(/[\d]*$/)[0];
-    if (isSwitch(switchName)) {
-      if (!validSwitchList.includes(switchName)) {
-        return switchName.slice(1);
-      }
-    }
+const bothSwitchesPresent = (parsedArgs) => {
+  if (parsedArgs.numOfChars && parsedArgs.numOfLines) {
+    throw {
+      type: 'error',
+      message: ['head: can\'t combine line and byte counts']
+    };
   }
 };
 
@@ -34,15 +23,6 @@ const iterate = (args) => {
       return args[index];
     }
   };
-};
-
-const validateArgs = (args, validSwitchList) => {
-  if (bothSwitchesPresent(args, Object.keys(validSwitchList))) {
-    throw {
-      type: 'error',
-      message: ['head: can\'t combine line and byte counts']
-    };
-  }
 };
 
 // eslint-disable-next-line complexity
@@ -100,11 +80,12 @@ const parseArgs = (args) => {
     }
   }
   parseValuesToInt(parsedArgs);
-  validateArgs(args, switchList);
+  bothSwitchesPresent(parsedArgs);
+  // validateArgs(args, switchList);
   return parsedArgs;
 };
 
 exports.parseArgs = parseArgs;
 exports.isSwitch = isSwitch;
 exports.areSwitchesPresent = bothSwitchesPresent;
-exports.isValidSwitches = findInvallidSwitch;
+// exports.isValidSwitches = findInvallidSwitch;

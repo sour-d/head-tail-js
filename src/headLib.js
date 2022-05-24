@@ -23,9 +23,6 @@ const firstNLines = (content, sliceUpto) => {
 const firstNChars = (content, sliceUpto) => content.slice(0, sliceUpto);
 
 const readFileContent = (files, fileReader) => {
-  if (!files.length) {
-    throw { message: [UASAGE] };
-  }
   return files.map((file) => {
     try {
       return {
@@ -45,7 +42,11 @@ const isMultiFile = (files) => files.length > 1;
 
 const multiFileFormatter = ({ file, content }, index) => {
   const separator = index === 0 ? '' : '\n';
-  return `${separator}==> ${file} <==\n${content}`;
+  let formattedCoontent = content;
+  if (content.endsWith('\n')) {
+    formattedCoontent = content.slice(0, content.length - 1);
+  }
+  return `${separator}==> ${file} <==\n${formattedCoontent}`;
 };
 
 const displayFormattedContent = (contents, formatter, stdOut, stdErr) => {
@@ -77,7 +78,9 @@ const headFileContents = (fileContents, options) => {
 
 const headMain = (readFile, args, stdOut, strErr) => {
   try {
-    const { files, numOfChars, numOfLines = 10 } = parseArgs(args, SWITCHES);
+    const {
+      files, options: { numOfChars, numOfLines = 10 }
+    } = parseArgs(args, SWITCHES);
     const options = { numOfChars, numOfLines };
     const formatter = isMultiFile(files) ? multiFileFormatter : identity;
     const fileContents = readFileContent(files, readFile);
@@ -89,10 +92,10 @@ const headMain = (readFile, args, stdOut, strErr) => {
 };
 
 exports.headMain = headMain;
+exports.headFileContents = headFileContents;
 exports.head = head;
+exports.displayFormattedContent = displayFormattedContent;
 exports.firstNLines = firstNLines;
 exports.firstNChars = firstNChars;
-exports.outputFormatter = multiFileFormatter;
+exports.multiFileFormatter = multiFileFormatter;
 exports.readFileContent = readFileContent;
-exports.display = displayFormattedContent;
-

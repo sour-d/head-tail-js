@@ -8,7 +8,7 @@ describe('parseArgs', () => {
     '-': 'numOfLines'
   };
   it('should return array of file names', () => {
-    const expected = { files: ['1.txt', '2.txt', '3.txt'] };
+    const expected = { options: {}, files: ['1.txt', '2.txt', '3.txt'] };
     assert.deepStrictEqual(
       parseArgs(['1.txt', '2.txt', '3.txt'], SWITCHES), expected
     );
@@ -16,7 +16,7 @@ describe('parseArgs', () => {
 
   it('should return array of file names with numOfLines', () => {
     const expected = {
-      numOfLines: 1,
+      options: { numOfLines: 1 },
       files: ['1.txt', '2.txt', '3.txt']
     };
     assert.deepStrictEqual(
@@ -26,7 +26,7 @@ describe('parseArgs', () => {
 
   it('should return array of file names with numOfChars', () => {
     const expected = {
-      numOfChars: 1,
+      options: { numOfChars: 1 },
       files: ['1.txt', '2.txt', '3.txt']
     };
     assert.deepStrictEqual(
@@ -48,7 +48,7 @@ describe('parseArgs', () => {
 
   it('Should take last value if switch mentioned two times', () => {
     const expected = {
-      numOfChars: 2,
+      options: { numOfChars: 2 },
       files: ['1.txt', '2.txt']
     };
     assert.deepStrictEqual(
@@ -58,7 +58,7 @@ describe('parseArgs', () => {
 
   it('Should return array if arg have switch and value together', () => {
     const expected = {
-      numOfChars: 1,
+      options: { numOfChars: 1 },
       files: ['1.txt']
     };
     assert.deepStrictEqual(parseArgs(['-c1', '1.txt'], SWITCHES), expected);
@@ -66,7 +66,7 @@ describe('parseArgs', () => {
 
   it('Should consider -[DIGITS] as valid key', () => {
     const expected = {
-      numOfLines: 1,
+      options: { numOfLines: 1 },
       files: ['1.txt']
     };
     assert.deepStrictEqual(parseArgs(['-1', '1.txt'], SWITCHES), expected);

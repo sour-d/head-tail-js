@@ -1,51 +1,17 @@
 /* eslint-disable max-statements */
-const isSwitch = (word) => {
-  return word.indexOf('-') === 0;
-};
+const UASAGE = 'usage: head [-n lines | -c bytes] [file ...]';
 
-const bothSwitchesPresent = (parsedArgs) => {
-  if (parsedArgs.numOfChars && parsedArgs.numOfLines) {
-    throw {
-      type: 'error',
-      message: ['head: can\'t combine line and byte counts']
-    };
-  }
+const isFlag = (arg) => {
+  return arg.startsWith('-');
 };
 
 const iterate = (args) => {
   let index = -1;
   return {
-    current: function () {
-      return args[index];
-    },
-    next: function () {
-      index++;
-      return args[index];
-    }
+    current: () => args[index],
+    next: () => args[++index],
+    drain: () => args.slice(index)
   };
-};
-
-// eslint-disable-next-line complexity
-const parseValuesToInt = (parsedArgs) => {
-  if (parsedArgs.numOfChars) {
-    if (!isFinite(+parsedArgs.numOfChars)) {
-      throw {
-        type: 'error',
-        message: ['head: illegal byte count -- ' + parsedArgs.numOfChars]
-      };
-    }
-    parsedArgs.numOfChars = +parsedArgs.numOfChars;
-  }
-  if (parsedArgs.numOfLines) {
-    if (!isFinite(+parsedArgs.numOfLines)) {
-      throw {
-        type: 'error',
-        message: ['head: illegal line count -- ' + parsedArgs.numOfLines]
-      };
-    }
-    parsedArgs.numOfLines = +parsedArgs.numOfLines;
-  }
-  return parsedArgs;
 };
 
 const isSwitchJoinedWithValue = (arg) => {
@@ -67,38 +33,121 @@ const splitArgs = (args) => {
   return splitedArgs;
 };
 
-const isValidSwitch = (switchName, switchList) => {
-  if (!switchList[switchName]) {
+const validateFlagValue = value => {
+  if (!isFinite(+value) && +value > 0) {
     throw {
-      message: [
-        'head: illegal option -- ' + switchName.slice(1),
-        'usage: head [-n lines | -c bytes] [file ...]'
-      ]
+      message: ['head: illegal line count -- ' + value]
     };
   }
-  return true;
 };
 
-const parseArgs = (args, switchList) => {
-  const splitedArgs = splitArgs(args);
-  const parsedArgs = { files: [] };
+const parseInt = value => +value;
 
-  const argsIterator = iterate(splitedArgs);
-  while (argsIterator.next()) {
-    const argument = argsIterator.current();
-    if (isSwitch(argument) && isValidSwitch(argument, switchList)) {
-      parsedArgs[switchList[argument]] = argsIterator.next();
-    } else {
-      parsedArgs.files.push(argument);
-    }
+const illegalFlagErr = (flag) => {
+  throw {
+    message: [
+      'head: illegal option -- ' + flag.slice(1),
+      'usage: head [-n lines | -c bytes] [file ...]'
+    ]
+  };
+};
+
+const bothSwitchesPresent = (args) => {
+  const options = ['numOfChars', 'numOfLines'];
+  const isPresent = options.reduce((isPresent, option) => {
+    return isPresent && args.options[option] !== undefined;
+  }, true);
+  if (isPresent) {
+    throw {
+      message: ['head: can\'t combine line and byte counts']
+    };
   }
-  parseValuesToInt(parsedArgs);
-  bothSwitchesPresent(parsedArgs);
+};
+
+const noFilePresent = (args) => {
+  if (!args.files.length) {
+    throw {
+      message: [UASAGE]
+    };
+  }
+};
+
+const validFlags = [
+  {
+    flagSwitch: ['-n', '-'],
+    name: 'numOfLines',
+    parse: parseInt,
+    validate: validateFlagValue
+  }, {
+    flagSwitch: ['-c'],
+    name: 'numOfChars',
+    parse: parseInt,
+    validate: validateFlagValue
+  }, {
+    flagSwitch: ['--invalid-flag'],
+    name: 'invalidFlag',
+    throwErr: illegalFlagErr
+  }
+];
+
+const validations = [
+  bothSwitchesPresent, noFilePresent
+];
+
+const parsingData = { validFlags, validations };
+
+const findFlag = (validFlags, flag) => {
+  return validFlags.find((flagData) => flagData.flagSwitch.includes(flag));
+};
+
+const runValidations = (validations, parsedArgs) => {
+  validations.forEach((validator) => validator(parsedArgs));
+};
+
+const parseFiles = (fileIterator) => {
+  const files = [];
+  while (fileIterator.next()) {
+    files.push(fileIterator.current());
+  }
+  return files;
+};
+
+const validateFlag = (validFlags, flag, value) => {
+  const flagDeatils = findFlag(validFlags, flag);
+  if (!flagDeatils) {
+    throw findFlag(validFlags, '--invalid-flag').throwErr(flag);
+  }
+  flagDeatils.validate(value);
+  return { name: flagDeatils.name, value: flagDeatils.parse(value) };
+};
+
+const parseFlags = (flagIterator, validFlags) => {
+  const options = {};
+  while (flagIterator.next() && isFlag(flagIterator.current())) {
+    const arg = flagIterator.current();
+    const flag = validateFlag(validFlags, arg, flagIterator.next());
+    options[flag.name] = flag.value;
+  }
+  return options;
+};
+
+const parseArgs = (args) => {
+  const { validFlags, validations } = parsingData;
+  const splitedArgs = splitArgs(args);
+
+  const flagIterator = iterate(splitedArgs);
+  const options = parseFlags(flagIterator, validFlags);
+
+  const fileIterator = iterate(flagIterator.drain());
+  const files = parseFiles(fileIterator);
+
+  const parsedArgs = { options, files };
+  runValidations(validations, parsedArgs);
   return parsedArgs;
 };
 
 exports.parseArgs = parseArgs;
-exports.isSwitch = isSwitch;
+exports.isSwitch = isFlag;
 exports.areSwitchesPresent = bothSwitchesPresent;
 exports.splitArgs = splitArgs;
 

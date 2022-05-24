@@ -15,4 +15,9 @@ const mockConsoleLog = (displayOutput) => {
 
 const mockedReadFile = mockReadFile(fs.readFileSync);
 const mockedConsoleLog = mockConsoleLog(console.log);
-headMain(mockedReadFile, process.argv.slice(2), mockedConsoleLog, console.error);
+headMain(
+  mockedReadFile,
+  process.argv.slice(2),
+  mockedConsoleLog,
+  console.error
+);

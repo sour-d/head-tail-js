@@ -1,6 +1,11 @@
 const { parseArgs } = require('./parse.js');
 const NEWLINE = '\n';
 const UASAGE = 'usage: head [-n lines | -c bytes] [file ...]';
+const SWITCHES = {
+  '-n': 'numOfLines',
+  '-c': 'numOfChars',
+  '-': 'numOfLines'
+};
 
 const split = (content, delimeter) => content.split(delimeter);
 
@@ -61,7 +66,7 @@ const display = (headedContents, formatter, displayOutput, displayError) => {
 
 const headMain = (readFile, args, displayOutput, displayError) => {
   try {
-    const parsedData = parseArgs(args);
+    const parsedData = parseArgs(args, SWITCHES);
     const { files, numOfChars, numOfLines = 10 } = parsedData;
     const options = { numOfChars, numOfLines };
     const formatter = files.length === 1 ? identity : outputFormatter;

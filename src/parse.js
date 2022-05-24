@@ -48,32 +48,45 @@ const parseValuesToInt = (parsedArgs) => {
   return parsedArgs;
 };
 
-// eslint-disable-next-line max-statements
-// eslint-disable-next-line complexity
-const parseArgs = (args) => {
-  const switchList = {
-    '-n': 'numOfLines',
-    '-c': 'numOfChars',
-    '-': 'numOfLines'
-  };
-  const parsedArgs = { files: [] };
+const isSwitchJoinedWithValue = (arg) => {
+  return arg.charAt(0) === '-' && /[\d]+/.test(arg);
+};
+
+const splitArgs = (args) => {
+  let splitedArgs = [];
   const argsIterator = iterate(args);
   while (argsIterator.next()) {
+    let arg = argsIterator.current();
+    if (isSwitchJoinedWithValue(arg)) {
+      const switchName = arg.match(/^-[a-z]*/)[0];
+      const switchValue = arg.match(/[\d]+$/)[0];
+      arg = [switchName, switchValue];
+    }
+    splitedArgs = splitedArgs.concat(arg);
+  }
+  return splitedArgs;
+};
+
+const validateSwitch = (switchName, switchList) => {
+  if (!switchList[switchName]) {
+    throw {
+      message: [
+        'head: illegal option -- ' + switchName.slice(1),
+        'usage: head [-n lines | -c bytes] [file ...]'
+      ]
+    };
+  }
+};
+
+const parseArgs = (args, switchList) => {
+  const splitedArgs = splitArgs(args);
+  const parsedArgs = { files: [] };
+  const argsIterator = iterate(splitedArgs);
+  while (argsIterator.next()) {
     if (isSwitch(argsIterator.current())) {
-      const switchName = argsIterator.current().match(/^-[a-z]*/)[0];
-      let switchValue = argsIterator.current().match(/[\d]*$/)[0];
-      if (switchValue === '') {
-        switchValue = argsIterator.next();
-      }
-      if (!switchList[switchName]) {
-        throw {
-          type: 'error',
-          message: [
-            'head: illegal option -- ' + switchName.match(/[a-z]+/i)[0],
-            'usage: head [-n lines | -c bytes] [file ...]'
-          ]
-        };
-      }
+      const switchName = argsIterator.current();
+      const switchValue = argsIterator.next();
+      validateSwitch(switchName, switchList);
       parsedArgs[switchList[switchName]] = switchValue;
     } else {
       parsedArgs.files.push(argsIterator.current());
@@ -81,11 +94,11 @@ const parseArgs = (args) => {
   }
   parseValuesToInt(parsedArgs);
   bothSwitchesPresent(parsedArgs);
-  // validateArgs(args, switchList);
   return parsedArgs;
 };
 
 exports.parseArgs = parseArgs;
 exports.isSwitch = isSwitch;
 exports.areSwitchesPresent = bothSwitchesPresent;
-// exports.isValidSwitches = findInvallidSwitch;
+exports.splitArgs = splitArgs;
+

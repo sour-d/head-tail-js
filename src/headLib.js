@@ -1,6 +1,9 @@
 const { parseArgs } = require('./parse.js');
+
 const NEWLINE = '\n';
+
 const UASAGE = 'usage: head [-n lines | -c bytes] [file ...]';
+
 const SWITCHES = {
   '-n': 'numOfLines',
   '-c': 'numOfChars',
@@ -17,24 +20,7 @@ const firstNLines = (content, sliceUpto) => {
   return join(firstElements, NEWLINE);
 };
 
-const firstNChars = (content, sliceUpto) => {
-  return content.slice(0, sliceUpto);
-};
-
-const head = (content, { numOfLines, numOfChars }) => {
-  const sliceUpto = numOfChars ? numOfChars : numOfLines;
-  if (numOfChars) {
-    return firstNChars(content, sliceUpto);
-  }
-  return firstNLines(content, sliceUpto);
-};
-
-const identity = ({ content }) => content;
-
-const outputFormatter = ({ file, content }, index) => {
-  const separater = index === 0 ? '' : '\n';
-  return `${separater}==> ${file} <==\n${content}`;
-};
+const firstNChars = (content, sliceUpto) => content.slice(0, sliceUpto);
 
 const readFileContent = (files, fileReader) => {
   if (!files.length) {
@@ -51,35 +37,54 @@ const readFileContent = (files, fileReader) => {
       };
     }
   });
-
 };
 
-const display = (headedContents, formatter, displayOutput, displayError) => {
-  headedContents.forEach(function (headedContent, index) {
-    if (headedContent.content) {
-      displayOutput(formatter(headedContent, index));
+const identity = ({ content }) => content;
+
+const isMultiFile = (files) => files.length > 1;
+
+const multiFileFormatter = ({ file, content }, index) => {
+  const separator = index === 0 ? '' : '\n';
+  return `${separator}==> ${file} <==\n${content}`;
+};
+
+const displayFormattedContent = (contents, formatter, stdOut, stdErr) => {
+  contents.forEach((content, index) => {
+    if (content.content) {
+      stdOut(formatter(content, index));
       return;
     }
-    displayError(headedContent.message);
+    stdErr(content.message);
   });
 };
 
-const headMain = (readFile, args, displayOutput, displayError) => {
+const head = (content, { numOfLines, numOfChars }) => {
+  const sliceUpto = numOfChars ? numOfChars : numOfLines;
+  if (numOfChars) {
+    return firstNChars(content, sliceUpto);
+  }
+  return firstNLines(content, sliceUpto);
+};
+
+const headFileContents = (fileContents, options) => {
+  return fileContents.map(fileContent => {
+    if (fileContent.content) {
+      fileContent.content = head(fileContent.content, options);
+    }
+    return fileContent;
+  });
+};
+
+const headMain = (readFile, args, stdOut, strErr) => {
   try {
-    const parsedData = parseArgs(args, SWITCHES);
-    const { files, numOfChars, numOfLines = 10 } = parsedData;
+    const { files, numOfChars, numOfLines = 10 } = parseArgs(args, SWITCHES);
     const options = { numOfChars, numOfLines };
-    const formatter = files.length === 1 ? identity : outputFormatter;
+    const formatter = isMultiFile(files) ? multiFileFormatter : identity;
     const fileContents = readFileContent(files, readFile);
-    fileContents.forEach(fileContent => {
-      if (fileContent.content) {
-        fileContent.content = head(fileContent.content, options);
-      }
-      return fileContent;
-    });
-    display(fileContents, formatter, displayOutput, displayError);
+    const headedContents = headFileContents(fileContents, options);
+    displayFormattedContent(headedContents, formatter, stdOut, strErr);
   } catch (error) {
-    displayError(error.message.join('\n'));
+    strErr(error.message.join('\n'));
   }
 };
 
@@ -87,7 +92,7 @@ exports.headMain = headMain;
 exports.head = head;
 exports.firstNLines = firstNLines;
 exports.firstNChars = firstNChars;
-exports.outputFormatter = outputFormatter;
+exports.outputFormatter = multiFileFormatter;
 exports.readFileContent = readFileContent;
-exports.readFileContent = readFileContent;
-exports.display = display;
+exports.display = displayFormattedContent;
+

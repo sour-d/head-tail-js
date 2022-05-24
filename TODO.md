@@ -1,6 +1,7 @@
 **TODO**
 
 - [ ] validation will be separated
+  - [ ] remove validation from `readFileContent`
 - [ ] large file
 
 **IDEAS**

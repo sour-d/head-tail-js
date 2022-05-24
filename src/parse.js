@@ -67,7 +67,7 @@ const splitArgs = (args) => {
   return splitedArgs;
 };
 
-const validateSwitch = (switchName, switchList) => {
+const isValidSwitch = (switchName, switchList) => {
   if (!switchList[switchName]) {
     throw {
       message: [
@@ -76,20 +76,20 @@ const validateSwitch = (switchName, switchList) => {
       ]
     };
   }
+  return true;
 };
 
 const parseArgs = (args, switchList) => {
   const splitedArgs = splitArgs(args);
   const parsedArgs = { files: [] };
+
   const argsIterator = iterate(splitedArgs);
   while (argsIterator.next()) {
-    if (isSwitch(argsIterator.current())) {
-      const switchName = argsIterator.current();
-      const switchValue = argsIterator.next();
-      validateSwitch(switchName, switchList);
-      parsedArgs[switchList[switchName]] = switchValue;
+    const argument = argsIterator.current();
+    if (isSwitch(argument) && isValidSwitch(argument, switchList)) {
+      parsedArgs[switchList[argument]] = argsIterator.next();
     } else {
-      parsedArgs.files.push(argsIterator.current());
+      parsedArgs.files.push(argument);
     }
   }
   parseValuesToInt(parsedArgs);

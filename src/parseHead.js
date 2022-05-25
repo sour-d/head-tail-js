@@ -2,6 +2,10 @@ const { parseArgs } = require('./parse.js');
 
 const USAGE = 'usage: head [-n lines | -c bytes] [file ...]';
 
+const validateFlagValues = (message, values) => {
+  return values.forEach((value) => validateFlagValue(message, value));
+};
+
 const validateFlagValue = (message, value) => {
   if (!isFinite(+value) || +value < 0) {
     throw {
@@ -10,7 +14,7 @@ const validateFlagValue = (message, value) => {
   }
 };
 
-const parseInt = value => +value;
+const parseInt = values => +values[0];
 
 const illegalFlagErr = (flag) => {
   throw {
@@ -46,25 +50,23 @@ const validFlags = [
     flagSwitch: ['-n', '-'],
     name: 'numOfLines',
     parse: parseInt,
-    validate: validateFlagValue.bind(null, 'head: illegal line count -- ')
+    validate: validateFlagValues.bind(null, 'head: illegal line count -- '),
+    noOfValues: 1
   }, {
     flagSwitch: ['-c'],
     name: 'numOfChars',
     parse: parseInt,
-    validate: validateFlagValue.bind(null, 'head: illegal byte count -- ')
+    validate: validateFlagValues.bind(null, 'head: illegal byte count -- '),
+    noOfValues: 1
   }, {
     flagSwitch: ['--invalid-flag'],
     name: 'invalidFlag',
     error: illegalFlagErr
   }
 ];
-const validations = [
-  bothSwitchesPresent, noFilePresent
-];
-const parsingData = { validFlags, validations };
 
 const parse = (args) => {
-  const parsedArgs = parseArgs(args, parsingData);
+  const parsedArgs = parseArgs(args, { validFlags });
   bothSwitchesPresent(parsedArgs);
   noFilePresent(parsedArgs);
   return parsedArgs;

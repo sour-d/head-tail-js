@@ -7,7 +7,12 @@ const createIterator = (args) => {
   return {
     current: () => args[index],
     next: () => args[++index],
-    drain: () => args.slice(index)
+    drain: () => args.slice(index),
+    nextElements: (count) => {
+      const elements = args.slice(index + 1, index + count + 1);
+      index = index + count;
+      return elements;
+    }
   };
 };
 
@@ -42,21 +47,22 @@ const parseFiles = (fileIterator) => {
   return files;
 };
 
-const validateFlag = (validFlags, flag, value) => {
+const validateFlag = (validFlags, flag, flagIterator) => {
   const flagDeatils = findFlag(validFlags, flag);
   if (!flagDeatils) {
     const invalidFlag = findFlag(validFlags, '--invalid-flag');
     throw invalidFlag.error(flag);
   }
-  flagDeatils.validate(value);
-  return { name: flagDeatils.name, value: flagDeatils.parse(value) };
+  const values = flagIterator.nextElements(flagDeatils.noOfValues);
+  flagDeatils.validate(values);
+  return { name: flagDeatils.name, value: flagDeatils.parse(values) };
 };
 
 const parseFlags = (flagIterator, validFlags) => {
   const options = {};
   while (flagIterator.next() && isFlag(flagIterator.current())) {
     const arg = flagIterator.current();
-    const flag = validateFlag(validFlags, arg, flagIterator.next());
+    const flag = validateFlag(validFlags, arg, flagIterator);
     options[flag.name] = flag.value;
   }
   return options;

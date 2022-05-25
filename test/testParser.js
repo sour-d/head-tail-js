@@ -15,8 +15,9 @@ describe('parseArgs', () => {
       {
         flagSwitch: ['-n', '-'],
         name: 'numOfLines',
-        parse: (value) => +value,
-        validate: () => { }
+        parse: (values) => values.map(value => +value),
+        validate: () => { },
+        noOfValues: 1
       }
     ];
     const expected = { options: {}, files: ['1.txt', '2.txt', '3.txt'] };
@@ -31,11 +32,12 @@ describe('parseArgs', () => {
       {
         flagSwitch: ['-n', '-'],
         name: 'numOfLines',
-        parse: (value) => +value,
-        validate: () => { }
+        parse: (values) => values.map(value => +value),
+        validate: () => { },
+        noOfValues: 1
       }
     ];
-    const expected = { options: { numOfLines: 1 }, files: ['1.txt', '2.txt'] };
+    const expected = { options: { numOfLines: [1] }, files: ['1.txt', '2.txt'] };
     assert.deepStrictEqual(
       parseArgs(['-n', '1', '1.txt', '2.txt'], { validFlags }), expected
     );
@@ -46,7 +48,8 @@ describe('parseArgs', () => {
       {
         flagSwitch: ['-n', '-'],
         name: 'numOfLines',
-        parse: (value) => +value,
+        parse: (values) => values.map(value => +value),
+        noOfValues: 1,
         validate: validateFlagValue.bind(null, 'head: illegal line count -- ')
       }
     ];

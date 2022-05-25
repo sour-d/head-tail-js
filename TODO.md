@@ -8,6 +8,7 @@
 
 **DONE**
 
+- [x] added option values count to the pasingData object
 - [x] created a file for parsing head. parse is generic and separate file.
 - [x] validation will be separated
   - [x] remove validation from `readFileContent`

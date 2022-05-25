@@ -2,14 +2,6 @@ const { parse } = require('./parseHead.js');
 
 const NEWLINE = '\n';
 
-const UASAGE = 'usage: head [-n lines | -c bytes] [file ...]';
-
-const SWITCHES = {
-  '-n': 'numOfLines',
-  '-c': 'numOfChars',
-  '-': 'numOfLines'
-};
-
 const split = (content, delimeter) => content.split(delimeter);
 
 const join = (content, delimeter) => content.join(delimeter);

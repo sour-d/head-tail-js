@@ -9,6 +9,7 @@
 
 **DONE**
 
+- [x] added consoleLog
 - [x] added multiple file
 - [x] added single file in arg
 - [x] made lastNChars

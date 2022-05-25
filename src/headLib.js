@@ -68,7 +68,7 @@ const headFileContents = (fileContents, options) => {
   });
 };
 
-const headMain = (readFile, args, stdOut, strErr) => {
+const headMain = (readFile, args, stdOut, stdErr) => {
   try {
     const {
       files, options: { numOfChars, numOfLines = 10 }
@@ -77,9 +77,9 @@ const headMain = (readFile, args, stdOut, strErr) => {
     const formatter = isMultiFile(files) ? multiFileFormatter : identity;
     const fileContents = readFileContent(files, readFile);
     const headedContents = headFileContents(fileContents, options);
-    displayFormattedContent(headedContents, formatter, stdOut, strErr);
+    displayFormattedContent(headedContents, formatter, stdOut, stdErr);
   } catch (error) {
-    strErr(error.message.join('\n'));
+    stdErr(error.message.join('\n'));
   }
 };
 

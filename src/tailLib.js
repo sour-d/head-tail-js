@@ -1,13 +1,13 @@
 const { isMultiFile, identity } = require('./headLib.js');
 const { parse } = require('./parseTailArg.js');
 
-const lastNChars = (content, sliceUpto) => {
-  return content.slice(-sliceUpto);
+const lastNChars = (content, sliceFrom) => {
+  return content.slice(-sliceFrom);
 };
 
-const lastNLines = (content, sliceUpto) => {
+const lastNLines = (content, sliceFrom) => {
   const lines = content.split('\n');
-  const lastLines = lines.slice(-sliceUpto);
+  const lastLines = lines.slice(-sliceFrom);
   return lastLines.join('\n');
 };
 
@@ -72,7 +72,6 @@ const tailMain = (fileReader, args, stdOut, stdErr) => {
     const tailedContents = tailFileContents(fileContents, options);
     displayFormattedContent(tailedContents, formatter, stdOut, stdErr);
   } catch (error) {
-    console.log(error);
     stdErr(error.message.join('\n'));
   }
 };

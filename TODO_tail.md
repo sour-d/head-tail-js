@@ -9,5 +9,6 @@
 
 **DONE**
 
+- [x] added single file in arg
 - [x] made lastNChars
 - [x] made lastNLines

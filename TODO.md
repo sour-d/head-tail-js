@@ -1,7 +1,4 @@
 **TODO**
-
-- [x] validation will be separated
-  - [x] remove validation from `readFileContent`
 - [ ] large file
 
 **IDEAS**
@@ -11,6 +8,9 @@
 
 **DONE**
 
+- [x] created a file for parsing head. parse is generic and separate file.
+- [x] validation will be separated
+  - [x] remove validation from `readFileContent`
 - [x] -1
 - [x] Validation
   - [x] -n, -c should not be together

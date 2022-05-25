@@ -1,4 +1,4 @@
-const { parseArgs } = require('./parse.js');
+const { parse } = require('./parseHead.js');
 
 const NEWLINE = '\n';
 
@@ -80,7 +80,7 @@ const headMain = (readFile, args, stdOut, strErr) => {
   try {
     const {
       files, options: { numOfChars, numOfLines = 10 }
-    } = parseArgs(args, SWITCHES);
+    } = parse(args);
     const options = { numOfChars, numOfLines };
     const formatter = isMultiFile(files) ? multiFileFormatter : identity;
     const fileContents = readFileContent(files, readFile);

@@ -2,74 +2,72 @@ const assert = require('assert');
 const { parseArgs, isSwitch, splitArgs } = require('../src/parse.js');
 
 describe('parseArgs', () => {
-  const SWITCHES = {
-    '-n': 'numOfLines',
-    '-c': 'numOfChars',
-    '-': 'numOfLines'
+  const validateFlagValue = (message, value) => {
+    if (!isFinite(+value) || +value < 0) {
+      throw {
+        message: [message + value]
+      };
+    }
   };
+
   it('should return array of file names', () => {
+    const validFlags = [
+      {
+        flagSwitch: ['-n', '-'],
+        name: 'numOfLines',
+        parse: (value) => +value,
+        validate: () => { }
+      }
+    ];
     const expected = { options: {}, files: ['1.txt', '2.txt', '3.txt'] };
     assert.deepStrictEqual(
-      parseArgs(['1.txt', '2.txt', '3.txt'], SWITCHES), expected
+      parseArgs(['1.txt', '2.txt', '3.txt'], { validFlags }),
+      expected
     );
   });
 
-  it('should return array of file names with numOfLines', () => {
-    const expected = {
-      options: { numOfLines: 1 },
-      files: ['1.txt', '2.txt', '3.txt']
-    };
+  it('should return numOfLines flag and value should be parsed', () => {
+    const validFlags = [
+      {
+        flagSwitch: ['-n', '-'],
+        name: 'numOfLines',
+        parse: (value) => +value,
+        validate: () => { }
+      }
+    ];
+    const expected = { options: { numOfLines: 1 }, files: ['1.txt', '2.txt'] };
     assert.deepStrictEqual(
-      parseArgs(['-n', '1', '1.txt', '2.txt', '3.txt'], SWITCHES), expected
+      parseArgs(['-n', '1', '1.txt', '2.txt'], { validFlags }), expected
     );
   });
 
-  it('should return array of file names with numOfChars', () => {
-    const expected = {
-      options: { numOfChars: 1 },
-      files: ['1.txt', '2.txt', '3.txt']
-    };
-    assert.deepStrictEqual(
-      parseArgs(['-c', '1', '1.txt', '2.txt', '3.txt'], SWITCHES), expected
+  it('should throw error for invalid value of option', () => {
+    const validFlags = [
+      {
+        flagSwitch: ['-n', '-'],
+        name: 'numOfLines',
+        parse: (value) => +value,
+        validate: validateFlagValue.bind(null, 'head: illegal line count -- ')
+      }
+    ];
+    assert.throws(() =>
+      parseArgs(['-n', 'a', '1.txt', '2.txt'], { validFlags })
     );
   });
 
-  it('should throw error if both switch present', () => {
-    assert.throws(() => {
-      parseArgs(['-c', '1', '-n', '2', '1.txt', '2.txt', '3.txt'], SWITCHES);
-    });
-  });
-
-  it('should throw error if switch is invalid', () => {
-    assert.throws(() => {
-      parseArgs(['-a', '1', './1.txt', './2.txt', '3.txt'], SWITCHES);
-    });
-  });
-
-  it('Should take last value if switch mentioned two times', () => {
-    const expected = {
-      options: { numOfChars: 2 },
-      files: ['1.txt', '2.txt']
-    };
-    assert.deepStrictEqual(
-      parseArgs(['-c', '1', '-c2', '1.txt', '2.txt'], SWITCHES), expected
+  it('should throw error for invalid option', () => {
+    const validFlags = [
+      {
+        flagSwitch: ['--invalid-flag'],
+        name: 'invalidFlag',
+        error: () => {
+          throw 'error';
+        }
+      }
+    ];
+    assert.throws(() =>
+      parseArgs(['-n', 'a', '1.txt', '2.txt'], { validFlags })
     );
-  });
-
-  it('Should return array if arg have switch and value together', () => {
-    const expected = {
-      options: { numOfChars: 1 },
-      files: ['1.txt']
-    };
-    assert.deepStrictEqual(parseArgs(['-c1', '1.txt'], SWITCHES), expected);
-  });
-
-  it('Should consider -[DIGITS] as valid key', () => {
-    const expected = {
-      options: { numOfLines: 1 },
-      files: ['1.txt']
-    };
-    assert.deepStrictEqual(parseArgs(['-1', '1.txt'], SWITCHES), expected);
   });
 });
 

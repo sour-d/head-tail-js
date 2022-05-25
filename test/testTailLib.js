@@ -16,7 +16,7 @@ describe.only('tailMain', () => {
     const mockedReadFile = mockReadFile(['1.txt'], ['1\n2\n3\n4\n6\n6\n7']);
     const options = { numOfLines: 2 };
     assert.deepStrictEqual(
-      tailMain(mockedReadFile, '1.txt', options), '6\n7'
+      tailMain(mockedReadFile, ['1.txt'], options), ['6\n7']
     );
   });
 
@@ -24,7 +24,15 @@ describe.only('tailMain', () => {
     const mockedReadFile = mockReadFile(['1.txt'], ['1\n2\n3\n4\n6\n6\n7']);
     const options = { numOfChars: 2 };
     assert.deepStrictEqual(
-      tailMain(mockedReadFile, '1.txt', options), '\n7'
+      tailMain(mockedReadFile, ['1.txt'], options), ['\n7']
+    );
+  });
+
+  it('should return last two chars', () => {
+    const mockedReadFile = mockReadFile(['1.txt', '2.txt'], ['1\n2', '3\n4']);
+    const options = { numOfChars: 1 };
+    assert.deepStrictEqual(
+      tailMain(mockedReadFile, ['1.txt', '2.txt'], options), ['2', '4']
     );
   });
 });

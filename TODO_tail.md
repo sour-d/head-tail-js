@@ -9,4 +9,5 @@
 
 **DONE**
 
+- [x] made lastNChars
 - [x] made lastNLines

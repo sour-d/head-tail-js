@@ -1,5 +1,12 @@
-const tailMain = (content, { numOfLines, numOfChars }) => {
-  return lastNLines(content, { numOfLines });
+const tailMain = (content, options) => {
+  if (options.numOfChars) {
+    return lastNChars(content, options);
+  }
+  return lastNLines(content, options);
+};
+
+const lastNChars = (content, { numOfChars }) => {
+  return content.slice(-numOfChars);
 };
 
 const lastNLines = (content, { numOfLines }) => {

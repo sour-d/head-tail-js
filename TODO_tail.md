@@ -9,6 +9,7 @@
 
 **DONE**
 
+- [x] added stdErr for tailMain
 - [x] added output formatter
 - [x] added consoleLog
 - [x] added multiple file

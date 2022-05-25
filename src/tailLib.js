@@ -36,20 +36,21 @@ const multiFileFormatter = ({ file, content }, index) => {
   return `${separator}==> ${file} <==\n${formattedCoontent}`;
 };
 
-const displayFormattedContent = (contents, formatter, stdOut) => {
+const displayFormattedContent = (contents, formatter, stdOut, stdErr) => {
   contents.forEach((content, index) => {
     if (content.content) {
       stdOut(formatter(content, index));
       return;
     }
+    stdErr(content.message);
   });
 };
 
-const tailMain = (fileReader, files, options, stdOut) => {
+const tailMain = (fileReader, files, options, stdOut, stdErr) => {
   const formatter = isMultiFile(files) ? multiFileFormatter : identity;
   const fileContents = readFileContent(files, fileReader);
   const tailedContents = tailFileContents(fileContents, options);
-  displayFormattedContent(tailedContents, formatter, stdOut);
+  displayFormattedContent(tailedContents, formatter, stdOut, stdErr);
 
 };
 

@@ -1,4 +1,5 @@
 const { readFileContent, isMultiFile, identity } = require('./headLib.js');
+const { parse } = require('./parseTailArg.js');
 
 const lastNChars = (content, sliceUpto) => {
   return content.slice(-sliceUpto);
@@ -46,7 +47,11 @@ const displayFormattedContent = (contents, formatter, stdOut, stdErr) => {
   });
 };
 
-const tailMain = (fileReader, files, options, stdOut, stdErr) => {
+const tailMain = (fileReader, args, stdOut, stdErr) => {
+  const {
+    files, options: { numOfChars, numOfLines = 10 }
+  } = parse(args);
+  const options = { numOfChars, numOfLines };
   const formatter = isMultiFile(files) ? multiFileFormatter : identity;
   const fileContents = readFileContent(files, fileReader);
   const tailedContents = tailFileContents(fileContents, options);

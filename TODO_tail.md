@@ -1,14 +1,14 @@
 **TODO**
 
-- [ ] create tailMain for tail
-- [ ] make it work for hard coded data
-- [ ] add args
-
 **IDEAS**
 
 
 **DONE**
 
+
+- [x] create tailMain for tail
+- [x] make it work for hard coded data
+- [x] add args
 - [x] added stdErr for tailMain
 - [x] added output formatter
 - [x] added consoleLog

@@ -33,11 +33,9 @@ describe.only('tailMain', () => {
     const mockedReadFile = mockReadFile(['1.txt'], ['1\n2\n3\n4\n6\n6\n7']);
     const mockedConsoleLog = mockConsoleFn(['6\n7']);
     const mockedConsoleErr = mockConsoleFn([]);
-    const options = { numOfLines: 2 };
     tailMain(
       mockedReadFile,
-      ['1.txt'],
-      options,
+      ['-n', '2', '1.txt'],
       mockedConsoleLog.log,
       mockedConsoleErr.error
     );
@@ -50,11 +48,9 @@ describe.only('tailMain', () => {
     const mockedReadFile = mockReadFile(['1.txt'], ['1\n2\n3\n4\n6\n6\n7']);
     const mockedConsoleLog = mockConsoleFn(['\n7']);
     const mockedConsoleErr = mockConsoleFn([]);
-    const options = { numOfChars: 2 };
     tailMain(
       mockedReadFile,
-      ['1.txt'],
-      options,
+      ['-c', '2', '1.txt'],
       mockedConsoleLog.log,
       mockedConsoleErr.error
     );
@@ -68,11 +64,9 @@ describe.only('tailMain', () => {
       '==> 1.txt <==\n2', '\n==> 2.txt <==\n4'
     ]);
     const mockedConsoleErr = mockConsoleFn([]);
-    const options = { numOfChars: 1 };
     tailMain(
       mockedReadFile,
-      ['1.txt', '2.txt'],
-      options,
+      ['-n', '1', '1.txt', '2.txt'],
       mockedConsoleLog.log,
       mockedConsoleErr.error
     );
@@ -81,19 +75,17 @@ describe.only('tailMain', () => {
     assert.strictEqual(mockedConsoleErr.count(), 0);
   });
 
-  it.only('should return throw erroor from error stream', () => {
+  it('should return throw erroor from error stream', () => {
     const mockedReadFile = mockReadFile(['1.txt'], ['1\n2']);
     const mockedConsoleLog = mockConsoleFn([
-      '==> 1.txt <==\n2', '\n==> 2.txt <==\n4'
+      '==> 1.txt <==\n2'
     ]);
     const mockedConsoleErr = mockConsoleFn(
       ['head: 2.txt: No such file or directory']
     );
-    const options = { numOfChars: 1 };
     tailMain(
       mockedReadFile,
-      ['1.txt', '2.txt'],
-      options,
+      ['-n', '1', '1.txt', '2.txt'],
       mockedConsoleLog.log,
       mockedConsoleErr.error
     );

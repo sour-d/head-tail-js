@@ -1,4 +1,4 @@
-const { parse } = require('./parseHead.js');
+const { parse } = require('./headArgParser.js');
 
 const NEWLINE = '\n';
 

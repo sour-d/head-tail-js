@@ -8,6 +8,20 @@
 
 **DONE**
 
+- [x] write test for tail parser
+- [x] write test for head parser
+- [x] connected main with tai
+- [x] create tailMain for tail
+- [x] make it work for hard coded data
+- [x] add args
+- [x] added stdErr for tailMain
+- [x] added output formatter
+- [x] added consoleLog
+- [x] added multiple file
+- [x] added single file in arg
+- [x] made lastNChars
+- [x] made lastNLines
+
 - [x] added option values count to the pasingData object
 - [x] created a file for parsing head. parse is generic and separate file.
 - [x] validation will be separated

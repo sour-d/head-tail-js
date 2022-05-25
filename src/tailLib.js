@@ -1,5 +1,5 @@
 const { isMultiFile, identity } = require('./headLib.js');
-const { parse } = require('./parseTailArg.js');
+const { parse } = require('./tailArgParser.js');
 
 const lastNChars = (content, sliceFrom) => {
   return content.slice(-sliceFrom);

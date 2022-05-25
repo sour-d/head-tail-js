@@ -1,23 +1,12 @@
-const { headMain } = require('./headLib.js');
-const fs = require('fs');
-
-const mockReadFile = (readFile) => {
-  return (file, encoding) => {
-    return readFile(file, encoding).split('').reverse().join('');
-  };
+const tailMain = (content, { numOfLines, numOfChars }) => {
+  return lastNLines(content, { numOfLines });
 };
 
-const mockConsoleLog = (displayOutput) => {
-  return (message) => {
-    displayOutput(message.split('').reverse().join(''));
-  };
+const lastNLines = (content, { numOfLines }) => {
+  const lines = content.split('\n');
+  const lastLines = lines.slice(-numOfLines);
+  return lastLines.join('\n');
 };
 
-const mockedReadFile = mockReadFile(fs.readFileSync);
-const mockedConsoleLog = mockConsoleLog(console.log);
-headMain(
-  mockedReadFile,
-  process.argv.slice(2),
-  mockedConsoleLog,
-  console.error
-);
+exports.tailMain = tailMain;
+

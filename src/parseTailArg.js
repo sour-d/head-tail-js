@@ -18,7 +18,7 @@ const parseInt = values => +values[0];
 
 const illegalFlagErr = (flag) => {
   throw {
-    message: ['head: illegal option -- ' + flag.slice(1) + '\n' + USAGE]
+    message: ['tail: illegal option -- ' + flag.slice(1) + '\n' + USAGE]
   };
 };
 
@@ -29,7 +29,7 @@ const bothSwitchesPresent = (args) => {
   }, true);
   if (isPresent) {
     throw {
-      message: ['head: can\'t combine line and byte counts']
+      message: ['tail: can\'t combine line and byte counts']
     };
   }
 };
@@ -47,13 +47,13 @@ const validFlags = [
     flagSwitch: ['-n', '-'],
     name: 'numOfLines',
     parse: parseInt,
-    validate: validateFlagValues.bind(null, 'head: illegal line count -- '),
+    validate: validateFlagValues.bind(null, 'tail: illegal line count -- '),
     noOfValues: 1
   }, {
     flagSwitch: ['-c'],
     name: 'numOfChars',
     parse: parseInt,
-    validate: validateFlagValues.bind(null, 'head: illegal byte count -- '),
+    validate: validateFlagValues.bind(null, 'tail: illegal byte count -- '),
     noOfValues: 1
   }, {
     flagSwitch: ['--invalid-flag'],

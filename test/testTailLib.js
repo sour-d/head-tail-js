@@ -28,7 +28,7 @@ const mockConsoleFn = (contents) => {
   };
 };
 
-describe.only('tailMain', () => {
+describe('tailMain', () => {
   it('should return last two lines', () => {
     const mockedReadFile = mockReadFile(['1.txt'], ['1\n2\n3\n4\n6\n6\n7']);
     const mockedConsoleLog = mockConsoleFn(['6\n7']);
@@ -75,13 +75,13 @@ describe.only('tailMain', () => {
     assert.strictEqual(mockedConsoleErr.count(), 0);
   });
 
-  it('should return throw erroor from error stream', () => {
+  it('should return throw error from error stream', () => {
     const mockedReadFile = mockReadFile(['1.txt'], ['1\n2']);
     const mockedConsoleLog = mockConsoleFn([
       '==> 1.txt <==\n2'
     ]);
     const mockedConsoleErr = mockConsoleFn(
-      ['head: 2.txt: No such file or directory']
+      ['tail: 2.txt: No such file or directory']
     );
     tailMain(
       mockedReadFile,

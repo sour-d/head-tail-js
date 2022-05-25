@@ -1,4 +1,4 @@
-const { readFileContent, isMultiFile, identity } = require('./headLib.js');
+const { isMultiFile, identity } = require('./headLib.js');
 const { parse } = require('./parseTailArg.js');
 
 const lastNChars = (content, sliceUpto) => {
@@ -47,16 +47,34 @@ const displayFormattedContent = (contents, formatter, stdOut, stdErr) => {
   });
 };
 
-const tailMain = (fileReader, args, stdOut, stdErr) => {
-  const {
-    files, options: { numOfChars, numOfLines = 10 }
-  } = parse(args);
-  const options = { numOfChars, numOfLines };
-  const formatter = isMultiFile(files) ? multiFileFormatter : identity;
-  const fileContents = readFileContent(files, fileReader);
-  const tailedContents = tailFileContents(fileContents, options);
-  displayFormattedContent(tailedContents, formatter, stdOut, stdErr);
+const readFileContent = (files, fileReader) => {
+  return files.map((file) => {
+    try {
+      return {
+        content: fileReader(file, 'utf8'), file
+      };
+    } catch (error) {
+      return {
+        message: `tail: ${file}: No such file or directory`
+      };
+    }
+  });
+};
 
+const tailMain = (fileReader, args, stdOut, stdErr) => {
+  try {
+    const {
+      files, options: { numOfChars, numOfLines = 10 }
+    } = parse(args);
+    const options = { numOfChars, numOfLines };
+    const formatter = isMultiFile(files) ? multiFileFormatter : identity;
+    const fileContents = readFileContent(files, fileReader);
+    const tailedContents = tailFileContents(fileContents, options);
+    displayFormattedContent(tailedContents, formatter, stdOut, stdErr);
+  } catch (error) {
+    console.log(error);
+    stdErr(error.message.join('\n'));
+  }
 };
 
 exports.tailMain = tailMain;

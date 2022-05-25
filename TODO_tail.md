@@ -5,7 +5,7 @@
 
 **DONE**
 
-
+- [x] connected main with tailMain
 - [x] create tailMain for tail
 - [x] make it work for hard coded data
 - [x] add args

@@ -1,48 +1,57 @@
-const readFilesContent = (reader, files) => {
-  return files.map((file) => reader(file, 'utf8'));
+const { readFileContent, isMultiFile, identity } = require('./headLib.js');
+
+const lastNChars = (content, sliceUpto) => {
+  return content.slice(-sliceUpto);
 };
 
-const lastNChars = (content, { numOfChars }) => {
-  return content.slice(-numOfChars);
-};
-
-const lastNLines = (content, { numOfLines }) => {
+const lastNLines = (content, sliceUpto) => {
   const lines = content.split('\n');
-  const lastLines = lines.slice(-numOfLines);
+  const lastLines = lines.slice(-sliceUpto);
   return lastLines.join('\n');
 };
 
-// const identity = (content) => content;
+const tail = (content, { numOfLines, numOfChars }) => {
+  const sliceUpto = numOfChars ? numOfChars : numOfLines;
+  if (numOfChars) {
+    return lastNChars(content, sliceUpto);
+  }
+  return lastNLines(content, sliceUpto);
+};
 
-// const isMultiFile = (files) => files.length > 1;
+const tailFileContents = (fileContents, options) => {
+  return fileContents.map(fileContent => {
+    if (fileContent.content) {
+      fileContent.content = tail(fileContent.content, options);
+    }
+    return fileContent;
+  });
+};
 
-// const multiFileFormatter = ({ file, content }, index) => {
-//   const separator = index === 0 ? '' : '\n';
-//   let formattedCoontent = content;
-//   if (content.endsWith('\n')) {
-//     formattedCoontent = content.slice(0, content.length - 1);
-//   }
-//   return `${separator}==> ${file} <==\n${formattedCoontent}`;
-// };
+const multiFileFormatter = ({ file, content }, index) => {
+  const separator = index === 0 ? '' : '\n';
+  let formattedCoontent = content;
+  if (content.endsWith('\n')) {
+    formattedCoontent = content.slice(0, content.length - 1);
+  }
+  return `${separator}==> ${file} <==\n${formattedCoontent}`;
+};
 
-const displayFormattedContent = (contents, stdOut) => {
-  contents.forEach((content) => {
-    stdOut(content);
+const displayFormattedContent = (contents, formatter, stdOut) => {
+  contents.forEach((content, index) => {
+    if (content.content) {
+      stdOut(formatter(content, index));
+      return;
+    }
   });
 };
 
 const tailMain = (fileReader, files, options, stdOut) => {
-  const contents = readFilesContent(fileReader, files);
-  const tailedContent = contents.map(content => {
-    if (options.numOfChars) {
-      return lastNChars(content, options);
-    }
-    return lastNLines(content, options);
-  });
-  // const formatter = isMultiFile(files) ? multiFileFormatter : identity;
-  return displayFormattedContent(tailedContent, stdOut);
+  const formatter = isMultiFile(files) ? multiFileFormatter : identity;
+  const fileContents = readFileContent(files, fileReader);
+  const tailedContents = tailFileContents(fileContents, options);
+  displayFormattedContent(tailedContents, formatter, stdOut);
+
 };
 
 exports.tailMain = tailMain;
-exports.readFilesContent = readFilesContent;
 

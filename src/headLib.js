@@ -91,3 +91,6 @@ exports.firstNLines = firstNLines;
 exports.firstNChars = firstNChars;
 exports.multiFileFormatter = multiFileFormatter;
 exports.readFileContent = readFileContent;
+exports.isMultiFile = isMultiFile;
+exports.identity = identity;
+// exports.formatter ;

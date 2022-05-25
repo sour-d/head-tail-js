@@ -49,7 +49,9 @@ describe.only('tailMain', () => {
 
   it('should return last two chars', () => {
     const mockedReadFile = mockReadFile(['1.txt', '2.txt'], ['1\n2', '3\n4']);
-    const mockedConsoleLog = mockConsoleFn(['2', '4']);
+    const mockedConsoleLog = mockConsoleFn([
+      '==> 1.txt <==\n2', '\n==> 2.txt <==\n4'
+    ]);
     const options = { numOfChars: 1 };
     tailMain(
       mockedReadFile, ['1.txt', '2.txt'], options, mockedConsoleLog.log

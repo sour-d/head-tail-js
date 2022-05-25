@@ -9,6 +9,7 @@
 
 **DONE**
 
+- [x] added output formatter
 - [x] added consoleLog
 - [x] added multiple file
 - [x] added single file in arg

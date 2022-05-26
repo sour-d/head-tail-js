@@ -15,19 +15,19 @@ If more than a single file is specified, each file is preceded by a header consi
 ``` bash
 
 head | head --help
-  -> display `usage: head [-n lines | -c bytes] [file ...]`
+  -> Display 'usage: head [-n lines | -c bytes] [file ...]'
 
 head [file ...]
-  -> display the first 10 lines from the mentioned files
+  -> Display the first 10 lines from the mentioned files.
 
 head [-c bytes] [file ...]
-  -> display only the total charecter mentioned from the file
+  -> Display only the total charecter mentioned from the file.
 
 head [-n count] [file ...]
-  -> display only the total lines mentioned from the file
+  -> Display only the total lines mentioned from the file.
 
 head [-count] [file ...]
-  -> display only the total charecter mentioned from the file
+  -> Display only the total charecter mentioned from the file.
 ```
 
 # TAIL
@@ -47,17 +47,23 @@ If more than a single file is specified, each file is preceded by a header consi
 ``` bash
 
 tail | tail --help
-  -> display `usage: tail [-n lines | -c bytes] [file ...]`
+  -> Display 'usage: tail [-n lines | -c bytes] [file ...]'
 
 tail [file ...]
-  -> display the first 10 lines from the mentioned files
+  -> Display the first 10 lines from the mentioned files.
 
 tail [-c bytes] [file ...]
-  -> display only the total charecter mentioned from the file
+  -> Display only the total charecter mentioned from the file.
 
 tail [-n count] [file ...]
-  -> display only the total lines mentioned from the file
+  -> Display only the total lines mentioned from the file.
 
 tail [-count] [file ...]
-  -> display only the total charecter mentioned from the file
+  -> Display only the total charecter mentioned from the file.
+
+tail [-q] [file ...]
+  -> Suppresses printing of headers when multiple files are being examined.
+
+tail [-r] [file ...]
+  -> The -r option causes the input to be displayed in reverse order, by line.
 ```

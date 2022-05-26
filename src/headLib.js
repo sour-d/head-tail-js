@@ -17,9 +17,7 @@ const firstNChars = (content, sliceUpto) => content.slice(0, sliceUpto);
 const readFileContent = (files, fileReader) => {
   return files.map((file) => {
     try {
-      return {
-        content: fileReader(file, 'utf8'), file
-      };
+      return { name: file, content: fileReader(file, 'utf8') };
     } catch (error) {
       return {
         message: `head: ${file}: No such file or directory`
@@ -32,22 +30,22 @@ const identity = ({ content }) => content;
 
 const isMultiFile = (files) => files.length > 1;
 
-const multiFileFormatter = ({ file, content }, index) => {
+const multiFileFormatter = ({ name, content }, index) => {
   const separator = index === 0 ? '' : '\n';
-  let formattedCoontent = content;
+  let formattedContent = content;
   if (content.endsWith('\n')) {
-    formattedCoontent = content.slice(0, content.length - 1);
+    formattedContent = content.slice(0, content.length - 1);
   }
-  return `${separator}==> ${file} <==\n${formattedCoontent}`;
+  return `${separator}==> ${name} <==\n${formattedContent}`;
 };
 
-const displayFormattedContent = (contents, formatter, stdOut, stdErr) => {
-  contents.forEach((content, index) => {
-    if (content.content) {
-      stdOut(formatter(content, index));
+const displayFormattedContent = (filesData, formatter, stdOut, stdErr) => {
+  filesData.forEach((file, index) => {
+    if (file.content) {
+      stdOut(formatter(file, index));
       return;
     }
-    stdErr(content.message);
+    stdErr(file.message);
   });
 };
 

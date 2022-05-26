@@ -2,12 +2,12 @@
 const { headMain } = require('./src/headLib.js');
 const fs = require('fs');
 
-const main = () => headMain(
+const main = (args) => headMain(
   fs.readFileSync,
-  process.argv.slice(2),
+  args,
   console.log,
   console.error
 );
 
-main();
+main(process.argv.slice(2));
 

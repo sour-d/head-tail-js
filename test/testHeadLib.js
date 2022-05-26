@@ -40,31 +40,36 @@ const mockConsoleFn = (contents) => {
 describe('head', () => {
   it('should return the single line', () => {
     const options = { numOfLines: 1 };
-    const actual = head('hello', options);
+    const content = 'hello';
+    const actual = head({ content }, options);
     assert.strictEqual(actual, 'hello');
   });
 
   it('should return first 2 lines', () => {
     const options = { numOfLines: 2 };
-    const actual = head('Hello\nBye', options);
+    const content = 'Hello\nBye';
+    const actual = head({ content }, options);
     assert.strictEqual(actual, 'Hello\nBye');
   });
 
   it('should return first 4 lines', () => {
     const options = { numOfLines: 4 };
-    const actual = head('One\nTwo\nThree\nFour', options);
+    const content = 'One\nTwo\nThree\nFour';
+    const actual = head({ content }, options);
     assert.strictEqual(actual, 'One\nTwo\nThree\nFour');
   });
 
   it('should return 1 charecters', () => {
     const options = { numOfChars: 1 };
-    const actual = head('One\nTwo\nThree\nFour', options);
+    const content = 'One\nTwo\nThree\nFour';
+    const actual = head({ content }, options);
     assert.strictEqual(actual, 'O');
   });
 
   it('should return 5 charecters', () => {
     const options = { numOfChars: 5 };
-    const actual = head('One\nTwo\nThree\nFour', options);
+    const content = 'One\nTwo\nThree\nFour';
+    const actual = head({ content }, options);
     assert.strictEqual(actual, 'One\nT');
   });
 });

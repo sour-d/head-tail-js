@@ -51,7 +51,7 @@ const displayFormattedContent = (contents, formatter, stdOut, stdErr) => {
   });
 };
 
-const head = (content, { numOfLines, numOfChars }) => {
+const head = ({ content }, { numOfLines, numOfChars }) => {
   const sliceUpto = numOfChars ? numOfChars : numOfLines;
   if (numOfChars) {
     return firstNChars(content, sliceUpto);
@@ -59,24 +59,22 @@ const head = (content, { numOfLines, numOfChars }) => {
   return firstNLines(content, sliceUpto);
 };
 
-const headFileContents = (fileContents, options) => {
-  return fileContents.map(fileContent => {
-    if (fileContent.content) {
-      fileContent.content = head(fileContent.content, options);
+const headFileContents = (filesData, options) => {
+  return filesData.map(data => {
+    if (data.content) {
+      data.content = head(data, options);
     }
-    return fileContent;
+    return data;
   });
 };
 
-const headMain = (readFile, args, stdOut, stdErr) => {
+const headMain = (fileReader, args, stdOut, stdErr) => {
   try {
-    const {
-      files, options: { numOfChars, numOfLines = 10 }
-    } = parse(args);
+    const { files, options: { numOfChars, numOfLines = 10 } } = parse(args);
     const options = { numOfChars, numOfLines };
     const formatter = isMultiFile(files) ? multiFileFormatter : identity;
-    const fileContents = readFileContent(files, readFile);
-    const headedContents = headFileContents(fileContents, options);
+    const filesData = readFileContent(files, fileReader);
+    const headedContents = headFileContents(filesData, options);
     displayFormattedContent(headedContents, formatter, stdOut, stdErr);
   } catch (error) {
     stdErr(error.message.join('\n'));
@@ -93,4 +91,3 @@ exports.multiFileFormatter = multiFileFormatter;
 exports.readFileContent = readFileContent;
 exports.isMultiFile = isMultiFile;
 exports.identity = identity;
-// exports.formatter ;

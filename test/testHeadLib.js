@@ -230,7 +230,7 @@ describe('headMain', () => {
 describe('multiFileFormatter', () => {
   it('should return formatted content', () => {
     const fileContent = {
-      file: '1.txt',
+      name: '1.txt',
       content: '1'
     };
     assert.deepStrictEqual(
@@ -247,7 +247,7 @@ describe('readFileContent', () => {
     const mockedReadFile = mockReadFile(['hello.txt'], ['hello']);
     const actual = readFileContent(['hello.txt'], mockedReadFile);
     const expected = [
-      { file: 'hello.txt', content: 'hello' }
+      { name: 'hello.txt', content: 'hello' }
     ];
     assert.deepStrictEqual(actual, expected);
   });
@@ -256,7 +256,7 @@ describe('readFileContent', () => {
     const mockedReadFile = mockReadFile(['1.txt'], ['1']);
     const actual = readFileContent(['1.txt', '2.txt'], mockedReadFile);
     const expected = [
-      { file: '1.txt', content: '1' },
+      { name: '1.txt', content: '1' },
       { message: 'head: 2.txt: No such file or directory' }
     ];
     assert.deepStrictEqual(actual, expected);

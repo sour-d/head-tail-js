@@ -1,3 +1,4 @@
+const assert = require('assert');
 const {
   headMain,
   headFileContents,
@@ -8,7 +9,6 @@ const {
   readFileContent,
   displayFormattedContent
 } = require('../src/headLib.js');
-const assert = require('assert');
 
 const mockReadFile = (fileName, content) => {
   let count = 0;
@@ -21,20 +21,13 @@ const mockReadFile = (fileName, content) => {
 };
 
 const mockConsoleFn = (contents) => {
-  let count = 0;
-  return {
-    count: () => count,
-    log: (message) => {
-      assert.strictEqual(contents[count], message);
-      count++;
-      return message;
-    },
-    error: (message) => {
-      assert.strictEqual(contents[count], message);
-      count++;
-      return message;
-    }
+  const log = (message) => {
+    assert.strictEqual(contents[log.count], message);
+    log.count++;
+    return message;
   };
+  log.count = 0;
+  return log;
 };
 
 describe('head', () => {
@@ -59,7 +52,7 @@ describe('head', () => {
     assert.strictEqual(actual, 'One\nTwo\nThree\nFour');
   });
 
-  it('should return 1 charecters', () => {
+  it('should return 1 charecter', () => {
     const options = { numOfChars: 1 };
     const content = 'One\nTwo\nThree\nFour';
     const actual = head({ content }, options);
@@ -82,6 +75,7 @@ describe('firstNLines', () => {
   it('Should filter first 2 lines', () => {
     assert.deepStrictEqual(firstNLines('1\n2\n3', 2), '1\n2');
   });
+
   it('Should filter first 3 lines', () => {
     assert.deepStrictEqual(firstNLines('1\n2\n3', 3), '1\n2\n3');
   });
@@ -99,8 +93,9 @@ describe('firstNChars', () => {
   it('Should return first 3 chars', () => {
     assert.deepStrictEqual(firstNChars('hello', 3), 'hel');
   });
+
   it('Should return all char if count is greater than content length', () => {
-    assert.deepStrictEqual(firstNChars('hello', 3), 'hel');
+    assert.deepStrictEqual(firstNChars('hello', 6), 'hello');
   });
 });
 
@@ -112,12 +107,12 @@ describe('headMain', () => {
     headMain(
       mockedReadFile,
       ['-n', '1', './hello.txt'],
-      mockedDisplayOutput.log,
-      mockedDisplayError.error
+      mockedDisplayOutput,
+      mockedDisplayError
     );
 
-    assert.strictEqual(mockedDisplayOutput.count(), 1);
-    assert.strictEqual(mockedDisplayError.count(), 0);
+    assert.strictEqual(mockedDisplayOutput.count, 1);
+    assert.strictEqual(mockedDisplayError.count, 0);
   });
 
   it('Should return array of single charecter of one file', () => {
@@ -129,11 +124,11 @@ describe('headMain', () => {
     headMain(
       mockedReadFile,
       ['-c', '1', './hello.txt'],
-      mockedDisplayOutput.log,
-      mockedDisplayError.error
+      mockedDisplayOutput,
+      mockedDisplayError
     );
-    assert.strictEqual(mockedDisplayOutput.count(), 1);
-    assert.strictEqual(mockedDisplayError.count(), 0);
+    assert.strictEqual(mockedDisplayOutput.count, 1);
+    assert.strictEqual(mockedDisplayError.count, 0);
   });
 
   it('Should return array of single line from each file', () => {
@@ -148,11 +143,11 @@ describe('headMain', () => {
     headMain(
       mockedReadFile,
       ['-n', '1', 'hello.txt', 'bye.txt'],
-      mockedDisplayOutput.log,
-      mockedDisplayError.error
+      mockedDisplayOutput,
+      mockedDisplayError
     );
-    assert.strictEqual(mockedDisplayOutput.count(), 2);
-    assert.strictEqual(mockedDisplayError.count(), 0);
+    assert.strictEqual(mockedDisplayOutput.count, 2);
+    assert.strictEqual(mockedDisplayError.count, 0);
   });
 
   it('Should return array of single charecter of each file', () => {
@@ -167,11 +162,11 @@ describe('headMain', () => {
     headMain(
       mockedReadFile,
       ['-c', '1', 'hello.txt', 'bye.txt'],
-      mockedDisplayOutput.log,
-      mockedDisplayError.error
+      mockedDisplayOutput,
+      mockedDisplayError
     );
-    assert.strictEqual(mockedDisplayOutput.count(), 2);
-    assert.strictEqual(mockedDisplayError.count(), 0);
+    assert.strictEqual(mockedDisplayOutput.count, 2);
+    assert.strictEqual(mockedDisplayError.count, 0);
   });
 
   it('Should return error if invalid switches', () => {
@@ -185,11 +180,11 @@ describe('headMain', () => {
     headMain(
       mockedReadFile,
       ['-a', '1', 'hello.txt'],
-      mockedDisplayOutput.log,
-      mockedDisplayError.error
+      mockedDisplayOutput,
+      mockedDisplayError
     );
-    assert.strictEqual(mockedDisplayOutput.count(), 0);
-    assert.strictEqual(mockedDisplayError.count(), 1);
+    assert.strictEqual(mockedDisplayOutput.count, 0);
+    assert.strictEqual(mockedDisplayError.count, 1);
   });
 
   it('Should return error if both switches are present', () => {
@@ -203,11 +198,11 @@ describe('headMain', () => {
     headMain(
       mockedReadFile,
       ['-n', '1', '-c1', 'hello.txt'],
-      mockedDisplayOutput.log,
-      mockedDisplayError.error
+      mockedDisplayOutput,
+      mockedDisplayError
     );
-    assert.strictEqual(mockedDisplayOutput.count(), 0);
-    assert.strictEqual(mockedDisplayError.count(), 1);
+    assert.strictEqual(mockedDisplayOutput.count, 0);
+    assert.strictEqual(mockedDisplayError.count, 1);
   });
 
   it('Should return error if file name is not present', () => {
@@ -219,11 +214,11 @@ describe('headMain', () => {
     headMain(
       mockedReadFile,
       ['-n', '1'],
-      mockedDisplayOutput.log,
-      mockedDisplayError.error
+      mockedDisplayOutput,
+      mockedDisplayError
     );
-    assert.strictEqual(mockedDisplayOutput.count(), 0);
-    assert.strictEqual(mockedDisplayError.count(), 1);
+    assert.strictEqual(mockedDisplayOutput.count, 0);
+    assert.strictEqual(mockedDisplayError.count, 1);
   });
 });
 
@@ -271,11 +266,11 @@ describe('displayFormattedContent', () => {
     displayFormattedContent(
       contents,
       ({ content }) => content,
-      mockedDisplayOutput.log,
-      mockedDisplayError.error
+      mockedDisplayOutput,
+      mockedDisplayError
     );
-    assert.strictEqual(mockedDisplayOutput.count(), 1);
-    assert.strictEqual(mockedDisplayError.count(), 0);
+    assert.strictEqual(mockedDisplayOutput.count, 1);
+    assert.strictEqual(mockedDisplayError.count, 0);
   });
 
   it('Should display headed contents and error also', () => {
@@ -288,11 +283,11 @@ describe('displayFormattedContent', () => {
     displayFormattedContent(
       contents,
       ({ content }) => content,
-      mockedDisplayOutput.log,
-      mockedDisplayError.error
+      mockedDisplayOutput,
+      mockedDisplayError
     );
-    assert.strictEqual(mockedDisplayOutput.count(), 1);
-    assert.strictEqual(mockedDisplayError.count(), 1);
+    assert.strictEqual(mockedDisplayOutput.count, 1);
+    assert.strictEqual(mockedDisplayError.count, 1);
   });
 });
 

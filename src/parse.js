@@ -3,7 +3,7 @@ const isFlag = (arg) => {
 };
 
 const createIterator = (args) => {
-  let index = -1;
+  let index = 0;
   return {
     current: () => args[index],
     next: () => args[++index],
@@ -16,35 +16,27 @@ const createIterator = (args) => {
   };
 };
 
-const isSwitchJoinedWithValue = (arg) => {
+const isCombinedFlag = (arg) => {
   return arg.charAt(0) === '-' && /[\d]+/.test(arg);
 };
 
-const splitArgs = (args) => {
-  let splitedArgs = [];
-  const argsIterator = createIterator(args);
-  while (argsIterator.next()) {
-    let arg = argsIterator.current();
-    if (isSwitchJoinedWithValue(arg)) {
-      const switchName = arg.match(/^-[a-z]*/)[0];
-      const switchValue = arg.match(/[\d]+$/)[0];
-      arg = [switchName, switchValue];
+const splitFlagAndValue = (arg) => {
+  const flag = arg.match(/^-[a-z]*/)[0];
+  const value = arg.match(/[\d]+$/)[0];
+  return [flag, value];
+};
+
+const standardizeArgs = (rawArgs) => {
+  return rawArgs.flatMap((arg) => {
+    if (isCombinedFlag(arg)) {
+      return splitFlagAndValue(arg);
     }
-    splitedArgs = splitedArgs.concat(arg);
-  }
-  return splitedArgs;
+    return arg;
+  });
 };
 
 const findFlag = (validFlags, flag) => {
   return validFlags.find((flagData) => flagData.flagSwitch.includes(flag));
-};
-
-const parseFiles = (fileIterator) => {
-  const files = [];
-  while (fileIterator.next()) {
-    files.push(fileIterator.current());
-  }
-  return files;
 };
 
 const validateFlag = (validFlags, flag, flagIterator) => {
@@ -53,29 +45,33 @@ const validateFlag = (validFlags, flag, flagIterator) => {
     const invalidFlag = findFlag(validFlags, '--invalid-flag');
     throw invalidFlag.error(flag);
   }
+
   const values = flagIterator.nextElements(flagDeatils.noOfValues);
+  const name = flagDeatils.name;
+  const parsedValues = flagDeatils.parse(values);
   flagDeatils.validate(values);
-  return { name: flagDeatils.name, value: flagDeatils.parse(values) };
+
+  return { name, value: parsedValues };
 };
 
 const parseFlags = (flagIterator, validFlags) => {
   const options = {};
-  while (flagIterator.next() && isFlag(flagIterator.current())) {
+  while (flagIterator.current() && isFlag(flagIterator.current())) {
     const arg = flagIterator.current();
     const flag = validateFlag(validFlags, arg, flagIterator);
     options[flag.name] = flag.value;
+    flagIterator.next();
   }
   return options;
 };
 
-const parseArgs = (args, { validFlags }) => {
-  const splitedArgs = splitArgs(args);
+const parseArgs = (rawArgs, { validFlags }) => {
+  const args = standardizeArgs(rawArgs);
 
-  const flagIterator = createIterator(splitedArgs);
-  const options = parseFlags(flagIterator, validFlags);
+  const argsIterator = createIterator(args);
+  const options = parseFlags(argsIterator, validFlags);
 
-  const fileIterator = createIterator(flagIterator.drain());
-  const files = parseFiles(fileIterator);
+  const files = argsIterator.drain();
 
   const parsedArgs = { options, files };
   return parsedArgs;
@@ -83,5 +79,6 @@ const parseArgs = (args, { validFlags }) => {
 
 exports.parseArgs = parseArgs;
 exports.isSwitch = isFlag;
-exports.splitArgs = splitArgs;
+exports.splitArgs = standardizeArgs;
+exports.createIterator = createIterator;
 

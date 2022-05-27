@@ -1,5 +1,7 @@
 const assert = require('assert');
-const { parseArgs, isSwitch, splitArgs } = require('../src/parse.js');
+const {
+  parseArgs, isSwitch, splitArgs, createIterator
+} = require('../src/parse.js');
 
 describe('parseArgs', () => {
   const validateFlagValue = (message, value) => {
@@ -101,5 +103,49 @@ describe('splitArgs', () => {
   it('should split switches thoses are joined with value only', () => {
     assert.deepStrictEqual(
       splitArgs(['-c', '1', '-n2', '1.txt']), ['-c', '1', '-n', '2', '1.txt']);
+  });
+});
+
+describe('createIterator', () => {
+  it('should create a interator of a given array', () => {
+    const numbers = [1, 2, 3, 4, 5];
+    const arrayIterator = createIterator(numbers);
+
+    assert.strictEqual(arrayIterator.current(), 1);
+
+    assert.strictEqual(arrayIterator.next(), 2);
+    assert.strictEqual(arrayIterator.current(), 2);
+    assert.strictEqual(arrayIterator.current(), 2);
+
+    assert.strictEqual(arrayIterator.next(), 3);
+    assert.strictEqual(arrayIterator.next(), 4);
+    assert.strictEqual(arrayIterator.current(), 4);
+  });
+
+  it('should return all the element left to iterate in array', () => {
+    const numbers = [1, 2, 3, 4, 5];
+    const arrayIterator = createIterator(numbers);
+
+    assert.strictEqual(arrayIterator.next(), 2);
+    assert.strictEqual(arrayIterator.current(), 2);
+    assert.deepStrictEqual(arrayIterator.drain(), [2, 3, 4, 5]);
+
+    assert.strictEqual(arrayIterator.next(), 3);
+    assert.strictEqual(arrayIterator.next(), 4);
+    assert.deepStrictEqual(arrayIterator.drain(), [4, 5]);
+
+  });
+
+  it('should return array of next elements and increase the index', () => {
+    const numbers = [1, 2, 3, 4, 5];
+    const arrayIterator = createIterator(numbers);
+
+    assert.strictEqual(arrayIterator.current(), 1);
+    assert.deepStrictEqual(arrayIterator.nextElements(2), [2, 3]);
+
+    assert.strictEqual(arrayIterator.current(), 3);
+    assert.strictEqual(arrayIterator.next(), 4);
+    assert.deepStrictEqual(arrayIterator.drain(), [4, 5]);
+
   });
 });
